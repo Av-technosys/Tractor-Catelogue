@@ -13,8 +13,8 @@ const Drawer = () => {
 
         <Sheet>
           <SheetTrigger>
-            <div className="w-12 h-12 border rounded-2xl border-blue-500 flex items-center justify-center hover:bg-blue-50 transition">
-              <IconMenu2 size={22} />
+            <div className="w-10 h-10  flex items-center justify-center">
+              <IconMenu2 size={20} />
             </div>
           </SheetTrigger>
 

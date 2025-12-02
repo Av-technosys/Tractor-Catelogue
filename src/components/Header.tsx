@@ -33,15 +33,16 @@ const Header = () => {
         </div>
 
     
-        <div className="flex items-center bg-gray-100 px-4 py-2 rounded-full w-60 gap-2">
-          <IconSearch size={20} className="text-gray-500" />
-          
-          <input
-            type="text"
-            placeholder="Search"
-            className="bg-transparent focus:outline-none text-gray-600 w-full"
-          />
-        </div>
+        <div className="flex items-center bg-gray-100 px-4 py-2 rounded-full gap-2 w-40 sm:w-48     md:w-56 lg:w-72 xl:w-80">
+  <IconSearch size={20} className="text-gray-500" />
+
+  <input
+    type="text"
+    placeholder="Search"
+    className="bg-transparent focus:outline-none text-gray-600 w-full"
+  />
+</div>
+
       
       </div>
    
