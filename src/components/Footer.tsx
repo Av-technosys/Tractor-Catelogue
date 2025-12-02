@@ -43,7 +43,7 @@ const Footer = () => {
       </div>
       <hr className="w-3/4 mx-auto" />
       <div className="text-center py-6  text-gray-500">
-        © 2025 SCOTT Parts. All rights reserved. ;
+        © 2025 SCOTT Parts. All rights reserved. 
      
 
       </div>
