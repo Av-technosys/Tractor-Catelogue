@@ -3,7 +3,7 @@ import React from 'react'
 const page = () => {
   return (
     <div>
-      Hello I am Product
+      This is admin profile 
     </div>
   )
 }
