@@ -33,11 +33,11 @@ const Drawer = () => {
                 Home
               </Link>
 
-              <Link href="/Categories" className="text-lg text-gray-500">
+              <Link href="/categories" className="text-lg text-gray-500">
                 Categories
               </Link>
 
-              <Link href="/Products" className="text-lg text-gray-500">
+              <Link href="/products" className="text-lg text-gray-500">
                 Products
               </Link>
             </div>

@@ -9,7 +9,7 @@ import Drawer from "./Drawer";
 const Header = () => {
   return (
     <>
-    <header className="w-full bg-white shadow-sm  max-sm:hidden">
+    <header className="w-full  bg-white shadow-sm  max-sm:hidden">
       <div className="max-w-7xl mx-auto flex items-center justify-between py-3 px-4">
 
         {/* -------- LEFT SIDE (Logo + Navbar) -------- */}
@@ -26,8 +26,8 @@ const Header = () => {
           {/* Navbar */}
           <nav className="flex items-center gap-8 font-semibold text-gray-600">
             <Link href="/" className="hover:text-black transition">Home</Link>
-            <Link href="/Categories" className="hover:text-black transition">Categories</Link>
-            <Link href="/Products" className="hover:text-black transition">Products</Link>
+            <Link href="/categories" className="hover:text-black transition">Categories</Link>
+            <Link href="/products" className="hover:text-black transition">Products</Link>
           </nav>
 
         </div>
