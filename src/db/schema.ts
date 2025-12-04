@@ -1,4 +1,11 @@
-import { pgTable, serial, text, integer, varchar } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  serial,
+  text,
+  integer,
+  varchar,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
@@ -24,7 +31,9 @@ export const categories = pgTable("categories", {
 });
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: varchar("username", { length: 100 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
-  passwordHash: text("password_hash").notNull(),
+  username: varchar("name", { length: 255 }),
+  email: varchar("email", { length: 255 }).unique().notNull(),
+  password: text("password"),
+  confirm_password: text("confirm_password"),
+  createdAt: timestamp("created_at").defaultNow(),
 });

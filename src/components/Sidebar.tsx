@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+
 import {
   LayoutDashboard,
   Package,
   FolderTree,
   Image as ImageIcon,
-  Settings,
 } from "lucide-react";
 import {
   Sidebar as ShadSidebar,
@@ -28,7 +29,6 @@ const projects = [
   { name: "Products", url: "/admin/Products", icon: Package },
   { name: "Categories", url: "/admin/Categories", icon: FolderTree },
   { name: "Media Manager", url: "/admin/media", icon: ImageIcon },
-  { name: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
 const Sidebar = () => {
@@ -52,11 +52,10 @@ const Sidebar = () => {
                       <Link
                         href={project.url}
                         className={`flex items-center gap-5 px-3 py-2 rounded-lg transition-all
-                                              ${
-                                                isActive
-                                                  ? "bg-blue-600 text-white pointer-events-none"
-                                                  : "hover:bg-gray-200"
-                                              }`}
+                                              ${isActive
+                            ? "bg-sky-600 text-white pointer-events-none"
+                            : "hover:bg-sky-100"
+                          }`}
                       >
                         <Icon className="h-5 w-5" />
                         <span className="text-lg">{project.name}</span>
@@ -70,13 +69,22 @@ const Sidebar = () => {
         </SidebarGroup>
       </SidebarContent>
       <Link href="/">
-        <div className="p-3 border-t flex justify-center">
+        <div className="p-1 border-t flex justify-center">
           <Button className="bg-transparent text-black text-center gap-2 py-4 hover:bg-orange-400 w-full">
             <IconArrowLeftFromArc />
             Back to Site
           </Button>
         </div>
       </Link>
+
+      <div className="p-1 pb-2 border-t flex justify-center">
+        <Button
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="bg-transparent text-black text-center gap-2 py-4 hover:bg-red-600 w-full">
+          <IconArrowLeftFromArc />
+          Logout
+        </Button>
+      </div>
     </ShadSidebar>
   );
 };
