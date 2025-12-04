@@ -41,11 +41,11 @@ export default function RootLayout({
               <span className="ml-3 font-semibold text-lg">Admin Panel</span>
             </div>
 
-            <main className="p-6">{children}</main>
+            <main className="">{children}</main>
           </SidebarInset>
         </SidebarProvider>
 
-        {children}
+        {/* {children} */}
       </body>
     </html>
   );
