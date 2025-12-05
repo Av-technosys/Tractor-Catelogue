@@ -6,9 +6,9 @@ import React from "react";
 
 const page = () => {
   return (
-    <div className="bg-gray-100 ">
+    <div className="bg-gray-100 max-w-7xl mx-auto  ">
       <div className="flex justify-between bg-white shadow-sm p-5">
-        <h1 className="text-2xl font-semibold">Products</h1>
+        <h1 className="text-2xl font-bold">Products</h1>
         <Link href={"/admin/product/new"}>
         <Button className="bg-sky-600 pointer-events-none text-xs">
           {" "}
