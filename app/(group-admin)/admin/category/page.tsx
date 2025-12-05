@@ -60,9 +60,9 @@ export default function CategoryTable() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="bg-gray-100 ">
-      <div className="flex justify-between bg-white shadow-sm p-5">
-        <h1 className="text-2xl font-semibold">Products</h1>
+    <div className="bg-gray-100 max-w-7xl mx-auto ">
+      <div className="flex justify-between bg-white shadow-sm  p-5">
+        <h1 className="text-2xl font-bold">Categories</h1>
         <Button
           onClick={() => setOpen(!open)}
           className="bg-sky-600 hover:bg-sky-600 text-xs"
