@@ -27,7 +27,7 @@ const projects = [
   { name: "Profile", url: "/admin/profile", icon: IconUser },
   { name: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { name: "Products", url: "/admin/product", icon: Package },
-  { name: "Categories", url: "/admin/Categories", icon: FolderTree },
+  { name: "Categories", url: "/admin/category", icon: FolderTree },
   { name: "Media Manager", url: "/admin/media", icon: ImageIcon },
 ];
 
