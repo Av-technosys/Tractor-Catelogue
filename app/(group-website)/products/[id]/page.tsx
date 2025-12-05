@@ -3,8 +3,9 @@ import React from "react";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { IconShare, IconMessage, IconArrowLeft } from "@tabler/icons-react";
+import { IconShare, IconMessage, IconArrowLeft, IconBrandWhatsapp, IconBrandFacebook, IconMail, IconLink } from "@tabler/icons-react";
 import Image from "next/image";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 
 const productData = {
@@ -24,15 +25,16 @@ const productData = {
 };
 
 export default function Page() {
-  return (
-    <div className="w-full  ">
-{/* TOP BACK BAR */}
-<div className="w-full bg-gray-100 border-b p-4 mb-6">
-  <button className="flex rounded-xl p-2 items-center gap-2  hover:bg-orange-400  hover:text-white">
+  return (<>
+    <div className="w-full bg-gray-100 border-b p-4 mb-6">
+  <button className="flex rounded-xl p-2 items-center gap-2  hover:bg-sky-600  hover:text-white">
     <span className="text-xl"><IconArrowLeft/></span>
     <span className="text-sm font-medium">Back to Products</span>
   </button>
 </div>
+
+    <div className="w-full max-w-7xl mx-auto ">
+{/* TOP BACK BAR */}
 
       <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-10 ">
 
@@ -104,18 +106,57 @@ export default function Page() {
             </Button>
 
             {/* SHARE BUTTON */}
-            <Button
+            {/* <Button
               variant="outline"
-              className="flex items-center gap-2 rounded-xl px-5 py-5 border-gray-300 hover:bg-orange-400 hover:text-white"
+              className="flex items-center gap-2 rounded-xl px-5 py-5 border-gray-300 hover:bg-sky-600 hover:text-white"
             >
               <IconShare size={18} />
               Share
-            </Button>
+            </Button> */}
+<Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          className="flex items-center gap-2 rounded-xl px-5 py-5 border-gray-300 hover:bg-sky-600 hover:text-white"
+        >
+          <IconShare size={18} />
+          Share
+        </Button>
+      </PopoverTrigger>
 
+      <PopoverContent className="w-60 p-4 rounded-xl shadow-lg">
+        <p className="font-semibold mb-3">Share this product</p>
+
+        {/* WhatsApp */}
+        <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
+          <IconBrandWhatsapp size={20} />
+          <span>WhatsApp</span>
+        </div>
+
+        {/* Facebook */}
+        <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
+          <IconBrandFacebook size={20} />
+          <span>Facebook</span>
+        </div>
+
+        {/* Email */}
+        <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
+          <IconMail size={20} />
+          <span>Email</span>
+        </div>
+
+        {/* Copy Link */}
+        <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
+          <IconLink size={20} />
+          <span>Copy Link</span>
+        </div>
+      </PopoverContent>
+    </Popover>
           </div>
 
         </div>
       </div>
     </div>
+    </>
   );
 }
