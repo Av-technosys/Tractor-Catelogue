@@ -5,6 +5,7 @@ import {
   integer,
   varchar,
   timestamp,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const products = pgTable("products", {
@@ -23,11 +24,18 @@ export const products = pgTable("products", {
   description: text("description"),
   imageUrl: text("image_url"),
 });
+// export const categories = pgTable("categories", {
+//   id: serial("id").primaryKey(),
+//   categoryName: varchar("category_name", { length: 255 }).notNull(),
+//   description: text("description"),
+//   imageUrl: text("image_url"),
+// });
+
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
   categoryName: varchar("category_name", { length: 255 }).notNull(),
   description: text("description"),
-  imageUrl: text("image_url"),
+  isActive: boolean("is_active").notNull().default(true),
 });
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
