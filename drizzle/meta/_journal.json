@@ -29,6 +29,41 @@
       "when": 1764826477327,
       "tag": "0003_worried_hannibal_king",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1764911786260,
+      "tag": "0004_previous_captain_cross",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1764911920753,
+      "tag": "0005_brief_randall",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1764912034328,
+      "tag": "0006_stiff_firebrand",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1764915821165,
+      "tag": "0007_red_speedball",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1764931303019,
+      "tag": "0008_purple_texas_twister",
+      "breakpoints": true
     }
   ]
 }
