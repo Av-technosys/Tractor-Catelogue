@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Products from "@/src/components/Products";
@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 export default function Page() {
+
+const [count, setCount] = useState(0);
+
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-10 ">
       <div className="text-center sm:text-left ">
@@ -19,7 +22,7 @@ export default function Page() {
           All Products
         </h1>
         <p className="text-sm sm:text-base text-gray-500 mt-1">
-          6 products found
+           {count} products found
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-10">
@@ -62,7 +65,7 @@ export default function Page() {
           </Button>
         </div>
         <div className="col-span-12 md:col-span-8 lg:col-span-9">
-          <Products />
+          <Products onCountChange={setCount} />
         </div>
       </div>
     </div>
