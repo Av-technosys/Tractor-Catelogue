@@ -34,19 +34,6 @@ export async function POST(req: Request) {
   }
 }
 
-// GET ALL PRODUCTS
-// export async function GET() {
-//   try {
-//     const data = await db.select().from(products);
-//     return NextResponse.json({ success: true, data });
-//   } catch (error) {
-//     console.error("PRODUCT GET ERROR:", error);
-//     return NextResponse.json({ success: false, error }, { status: 500 });
-//   } 
-// }
-
-
-// final working admin get api
 
 export async function GET(req: Request) {
   try {
