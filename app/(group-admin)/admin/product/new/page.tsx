@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,6 +27,7 @@ import { useRouter } from "next/navigation";
 
 const Page = () => {
   const router = useRouter();
+
   const [productName, setProductName] = useState("");
   const [engineType, setEngineType] = useState("");
   const [scottPartNo, setScottPartNo] = useState("");
@@ -39,6 +41,10 @@ const Page = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  // SUCCESS POPUP STATES
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string[]>([]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -67,14 +73,11 @@ const Page = () => {
       const data = await res.json();
 
       if (data.success) {
-        alert("Product Created");
-        router.push("/admin/product");
-      } else {
-        alert("Something went wrong");
+        setSuccessMessage(["Product Created", "Successfully!"]);
+        setShowSuccess(true);
       }
     } catch (err) {
       console.error(err);
-      alert("Server error");
     }
 
     setLoading(false);
@@ -110,6 +113,8 @@ const Page = () => {
 
   return (
     <div className="bg-gray-100 max-w-7xl mx-auto">
+
+      {/* PAGE HEADER */}
       <div className="flex items-center gap-4 bg-white shadow-sm p-5">
         <Link href={"/admin/product"}>
           <Button className="hover:bg-sky-600 hover:text-white bg-transparent text-black">
@@ -119,7 +124,10 @@ const Page = () => {
         <h1 className="text-2xl font-semibold">Add New Product</h1>
       </div>
 
+      {/* PAGE BODY */}
       <div className="p-15 max-sm:p-10 max-md:overflow-x-auto">
+
+        {/* BASIC INFO */}
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Basic Information</CardTitle>
@@ -128,6 +136,7 @@ const Page = () => {
 
           <CardContent>
             <form className="grid gap-6">
+
               <div className="flex flex-col gap-2">
                 <Label>Product Name</Label>
                 <Input
@@ -139,13 +148,13 @@ const Page = () => {
               </div>
 
               <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6">
+
                 <div className="flex flex-col gap-2">
                   <Label>Category</Label>
                   <Select value={category} onValueChange={setCategory}>
                     <SelectTrigger className="w-full bg-gray-50">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
-
                     <SelectContent>
                       <SelectGroup>
                         {categories.map((cat) => (
@@ -175,6 +184,7 @@ const Page = () => {
                     </SelectContent>
                   </Select>
                 </div>
+
               </div>
 
               <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6">
@@ -187,6 +197,7 @@ const Page = () => {
                     onChange={(e) => setScottPartNo(e.target.value)}
                   />
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <Label>OE Part No.</Label>
                   <Input
@@ -199,6 +210,7 @@ const Page = () => {
               </div>
 
               <div className="grid grid-cols-3 max-sm:grid-cols-1 gap-6">
+
                 <div className="flex flex-col gap-2">
                   <Label>Number of Pieces</Label>
                   <Input
@@ -208,6 +220,7 @@ const Page = () => {
                     onChange={(e) => setPieces(e.target.value)}
                   />
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <Label>Metal Type</Label>
                   <Select value={metalType} onValueChange={setMetalType}>
@@ -225,6 +238,7 @@ const Page = () => {
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <Label>STD</Label>
                   <Input
@@ -234,6 +248,7 @@ const Page = () => {
                     onChange={(e) => setStdClassification(e.target.value)}
                   />
                 </div>
+
               </div>
 
               <div className="flex flex-col gap-2">
@@ -255,27 +270,25 @@ const Page = () => {
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
+
             </form>
           </CardContent>
         </Card>
 
+        {/* IMAGE UPLOAD */}
         <Card className="border rounded-xl shadow-sm mt-10">
           <CardHeader>
             <CardTitle className="text-2xl font-semibold">
               Product Images
             </CardTitle>
             <CardDescription>
-              Upload product images (multiple files supported)
+              Upload product images
             </CardDescription>
           </CardHeader>
+
           <CardContent>
-            <div
-              className="border-2 border-dashed rounded-xl py-16 max-sm:px-7 max-sm:py-8 flex flex-col items-center justify-center text-center"
-            >
-              <IconUpload
-                size={35}
-                className="bg-gray-50 border p-1 rounded-full"
-              />
+            <div className="border-2 border-dashed rounded-xl py-16 max-sm:px-7 max-sm:py-8 flex flex-col items-center justify-center text-center">
+              <IconUpload size={35} className="bg-gray-50 border p-1 rounded-full" />
               <p className="text-xl mt-6">Click to upload or drag and drop</p>
               <p className="text-md mt-3">PNG, JPG up to 10MB</p>
 
@@ -293,30 +306,25 @@ const Page = () => {
           </CardContent>
         </Card>
 
+        
         <Card className="border rounded-xl shadow-sm mt-10">
           <CardHeader>
-            <CardTitle className="text-2xl font-semibold">
-              Product Status
-            </CardTitle>
+            <CardTitle className="text-2xl font-semibold">Product Status</CardTitle>
             <div className="flex items-center justify-between">
-              <p>
-                <CardTitle className="text-xl text-gray-500 mt-4">
-                  Active Status
-                </CardTitle>
-                <CardDescription>
-                  Make this product visible in the catalog
-                </CardDescription>
-              </p>
+              <div>
+                <CardTitle className="text-xl text-gray-500 mt-4">Active Status</CardTitle>
+                <CardDescription>Make this product visible</CardDescription>
+              </div>
               <Switch
                 className="mr-4 data-[state=checked]:bg-sky-600"
                 checked={isActive}
                 onCheckedChange={setIsActive}
-              ></Switch>
+              />
             </div>
           </CardHeader>
-          <CardContent></CardContent>
         </Card>
 
+        {/* BUTTONS */}
         <div className="flex gap-4 mt-10">
           <Button
             className="bg-sky-600 hover:bg-sky-500 w-[80%] py-5"
@@ -326,13 +334,38 @@ const Page = () => {
           </Button>
 
           <Button className="text-black hover:bg-sky-600 hover:text-white bg-transparent w-[15%] py-5 border-2 border-gray-200">
-            <Link href="/admin/product"> Cancel</Link>
+            <Link href="/admin/product">Cancel</Link>
           </Button>
         </div>
+
       </div>
+
+      {/* ⭐ SUCCESS POPUP ⭐ */}
+      {showSuccess && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[999]">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-80 text-center">
+
+            <div className="text-xl font-semibold mb-4 leading-tight">
+              <p>{successMessage[0]}</p>
+              <p>{successMessage[1]}</p>
+            </div>
+
+            <Button
+              className="bg-sky-600 w-full"
+              onClick={() => {
+                setShowSuccess(false);
+                router.push("/admin/product");
+              }}
+            >
+              OK
+            </Button>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
 
 export default Page;
-
