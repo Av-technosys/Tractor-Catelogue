@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
@@ -13,8 +14,14 @@ import {
   IconDroplet,
   IconDots,
 } from "@tabler/icons-react";
- 
-//mene slug wali functionality add ki 
+
+type Category = {
+  id: number;
+  icon: React.ElementType,
+  slug: string,
+  title: string,
+  count : number
+};
 
 const categories = [
   { title: "Engine Parts", slug: "engine", count: 45, icon: IconEngine },
@@ -28,6 +35,27 @@ const categories = [
 ];
 
 const Categories = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("/api/categories");
+      const json = await res.json();
+      setCategories(json.data || []);
+    } catch (err) {
+      console.error("Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  if (loading) return <p className="text-center py-10">Loading...</p>;
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

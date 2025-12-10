@@ -43,6 +43,9 @@ const Page = () => {
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  // 🟢 New State: Success Popup
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const categories = [
     "Engine Parts",
     "Transmission Parts",
@@ -71,7 +74,7 @@ const Page = () => {
     "Steel/Organic",
   ];
 
-  // ✅ Fetch product by ID and prefill form
+  // Fetch product
   useEffect(() => {
     if (!id) return;
 
@@ -79,8 +82,6 @@ const Page = () => {
       try {
         const res = await fetch(`/api/products?id=${id}`);
         const json = await res.json();
-
-        console.log("API RESPONSE:", json);
 
         if (json.success && json.data) {
           const p = json.data;
@@ -106,7 +107,7 @@ const Page = () => {
     fetchProduct();
   }, [id]);
 
-  // ✅ PUT update
+  // UPDATE product
   const handleSubmit = async () => {
     if (!id) return;
 
@@ -137,17 +138,20 @@ const Page = () => {
       const data = await res.json();
 
       if (data.success) {
-        alert("✅ Product Updated");
-        router.push("/admin/product");
-      } else {
-        alert("❌ Update Failed");
+        // 🟢 Show success popup instead of redirect
+        setShowSuccess(true);
       }
     } catch (error) {
       console.error("Update error:", error);
-      alert("Server error");
     }
 
     setLoading(false);
+  };
+
+  // OK Button → Close popup + redirect
+  const handleSuccessClose = () => {
+    setShowSuccess(false);
+    router.push("/admin/product");
   };
 
   return (
@@ -298,7 +302,9 @@ const Page = () => {
 
         <Card className="border rounded-xl shadow-sm mt-10">
           <CardHeader>
-            <CardTitle className="text-2xl font-semibold">Product Status</CardTitle>
+            <CardTitle className="text-2xl font-semibold">
+              Product Status
+            </CardTitle>
             <div className="flex items-center justify-between">
               <CardDescription>
                 Make this product visible in the catalog
@@ -328,6 +334,27 @@ const Page = () => {
           </Link>
         </div>
       </div>
+
+      {/* 🟢 SUCCESS POPUP */}
+      {showSuccess && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-8 shadow-xl text-center w-[90%] max-w-sm">
+            <h2 className="text-xl font-semibold text-green-600">
+              Product Updated
+            </h2>
+            <p className="text-gray-600 mt-2">
+              Product has been updated successfully!
+            </p>
+
+            <button
+              onClick={handleSuccessClose}
+              className="mt-5 bg-sky-600 text-white px-5 py-2 rounded-lg hover:bg-sky-500"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

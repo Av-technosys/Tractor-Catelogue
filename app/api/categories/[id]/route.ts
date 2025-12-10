@@ -3,17 +3,13 @@ import { db } from "@/src/db/client";
 import { categories } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
 
-type UpdateCategoryBody = {
-  categoryName: string;
-  description: string;
-  isActive: boolean;
-};
-export async function PUT(req: Request) {
-
+export async function PUT(req: Request, { params }) {
   try {
-    const { searchParams } = new URL(req.url);
-    const id = Number(searchParams.get("id"));
-    const body: UpdateCategoryBody = await req.json();
+    
+  
+    const {id}= await params;
+   
+    const body = await req.json();
 
     const updated = await db
       .update(categories) 
@@ -25,9 +21,29 @@ export async function PUT(req: Request) {
       .where(eq(categories.id, id))
       .returning();
 
-    return NextResponse.json({ success: true, data: updated[0] });
+    return NextResponse.json({ success: true,data: updated[0] });
   } catch (error) {
     console.error(error);
+    return NextResponse.json({ success: false, error }, { status: 500 });
+  }
+}
+export async function DELETE(req: Request, { params }) {
+  try {
+    const {id} = await params;
+
+    const deleted = await db
+      .delete(categories)
+      .where(eq(categories.id, id))
+      .returning();
+
+    return NextResponse.json({
+      success: true,
+      message: "Category Deleted Successfully",
+      data: deleted[0],
+    });
+
+  } catch (error) {
+    console.error("DELETE ERROR:", error);
     return NextResponse.json({ success: false, error }, { status: 500 });
   }
 }

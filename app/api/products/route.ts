@@ -3,7 +3,7 @@ import { db } from "@/src/db/client";
 import { products } from "@/src/db/schema";
 import { asc, eq } from "drizzle-orm";
 
-// CREATE PRODUCT
+
 
 export async function POST(req: Request) {
   try {
