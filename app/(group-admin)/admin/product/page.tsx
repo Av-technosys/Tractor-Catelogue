@@ -11,7 +11,6 @@ const page = () => {
         <h1 className="text-2xl font-bold">Products</h1>
         <Link href={"/admin/product/new"}>
         <Button className="bg-sky-600 pointer-events-none text-xs">
-          {" "}
           <IconPlus />
           Add Product
         </Button></Link>

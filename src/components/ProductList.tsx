@@ -1,4 +1,6 @@
+"use client";
 import { Avatar } from "@/components/ui/avatar";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -8,84 +10,70 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { IconSearch, IconEdit, IconTrash } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+type Product = {
+  id: number;
+  productName: string;
+  engineType: string;
+  scottPartNo: string;
+  category: string;
+  price: number;
+  isActive: boolean;
+};
 
 export default function ProductList() {
-     
+  const [productData, setProductData] = useState<Product[]>([]);
 
-  const ProductData = [
-    {
-      img: "AB",
-      name: "Piston Ring Set",
-      cylinderType: "4-Cylinder Diesel",
-      partno: "SPR-4C-001",
-      category: "Engine",
-      price: "$2450",
-      status: "Active",
-    },
-    {
-      img: "CN",
-      name: "Oil Filter Assembly",
-      cylinderType: "6-Cylinder Diesel",
-      partno: "SOF-6C-002",
-      category: "Engine",
-      price: "$890",
-      status: "Active",
-    },
-    {
-      img: "CN",
-      name: "Oil Filter Assembly",
-      cylinderType: "6-Cylinder Diesel",
-      partno: "SOF-6C-002",
-      category: "Engine",
-      price: "$890",
-      status: "Active",
-    },
-    {
-      img: "CN",
-      name: "Oil Filter Assembly",
-      cylinderType: "6-Cylinder Diesel",
-      partno: "SOF-6C-002",
-      category: "Engine",
-      price: "$890",
-      status: "Active",
-    },
-    {
-      img: "CN",
-      name: "Oil Filter Assembly",
-      cylinderType: "6-Cylinder Diesel",
-      partno: "SOF-6C-002",
-      category: "Engine",
-      price: "$890",
-      status: "Active",
-    },
-    {
-      img: "CN",
-      name: "Oil Filter Assembly",
-      cylinderType: "6-Cylinder Diesel",
-      partno: "SOF-6C-002",
-      category: "Engine",
-      price: "$890",
-      status: "Active",
-    },
-    {
-      img: "CN",
-      name: "Oil Filter Assembly",
-      cylinderType: "6-Cylinder Diesel",
-      partno: "SOF-6C-002",
-      category: "Engine",
-      price: "$890",
-      status: "Active",
-    },
-    {
-      img: "CN",
-      name: "Oil Filter Assembly",
-      cylinderType: "6-Cylinder Diesel",
-      partno: "SOF-6C-002",
-      category: "Engine",
-      price: "$890",
-      status: "Active",
-    },
-  ];
+
+  // Fetch products from DB
+
+
+
+  const getProductData = async () => {
+    try {
+      const res = await fetch("/api/products");
+      const data = await res.json();
+      setProductData(data.data);
+    } catch (error) {
+      console.log("error fetching products", error);
+    }
+  };
+
+  useEffect(() => {
+  const fetchData = async () => {
+    await getProductData();
+  };
+
+  fetchData();
+}, []);
+
+ const router = useRouter();
+
+  // delete product
+
+  const deleteProduct = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+
+    try {
+      const res = await fetch(`/api/products/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert("✅ Product deleted");
+        getProductData();
+      } else {
+        alert(" Delete failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error");
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto py-6 px-6 overflow-x-auto">
@@ -95,7 +83,6 @@ export default function ProductList() {
           type="text"
           placeholder="Search products..."
           className="bg-transparent focus:outline-none text-gray-600 w-full"
-         
         />
       </div>
       <div className="border rounded-lg bg-white overflow-hidden">
@@ -113,27 +100,30 @@ export default function ProductList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {ProductData.map((data, index) => (
+            {productData.map((value, index) => (
               <TableRow key={index} className="hover:bg-gray-50 text-gray-700">
                 <TableCell>
                   <div className="flex items-center  gap-3">
                     <Avatar className="w-8 h-8 flex justify-center items-center">
-                      {data.img}
+                      {value.productName?.charAt(0)}
                     </Avatar>
                     <div>
-                      <div className="font-medium">{data.name}</div>
+                      <div className="font-medium">{value.productName}</div>
                       <div className="text-gray-500 text-xs">
-                        {data.cylinderType}
+                        {value.engineType}
                       </div>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{data.partno}</TableCell>
-                <TableCell>{data.category}</TableCell>
-                <TableCell>{data.price}</TableCell>
+                <TableCell>{value.scottPartNo}</TableCell>
+                <TableCell>{value.category}</TableCell>
+                <TableCell>{value.price}</TableCell>
                 <TableCell>
-                  <span className="bg-sky-600 text-white px-2 text-xs rounded-full">
-                    {data.status}
+                  <span className="">
+                    <Switch
+                      className="data-[state=checked]:bg-sky-600"
+                      checked={value.isActive}
+                    />
                   </span>
                 </TableCell>
                 <TableCell>
@@ -141,10 +131,12 @@ export default function ProductList() {
                     <IconEdit
                       size={20}
                       className="text-gray-500 cursor-pointer"
+                      onClick={() => router.push(`/admin/product/${value.id}`)}
                     />
                     <IconTrash
                       size={20}
                       className="text-gray-500 cursor-pointer"
+                      onClick={() => deleteProduct(value.id)}
                     />
                   </div>
                 </TableCell>
