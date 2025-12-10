@@ -12,6 +12,7 @@ import {
 import { IconSearch, IconEdit, IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import ConfirmPopup from "./Alert";
 
 type Product = {
   id: number;
@@ -26,11 +27,7 @@ type Product = {
 export default function ProductList() {
   const [productData, setProductData] = useState<Product[]>([]);
 
-
-  // Fetch products from DB
-
-
-
+  
   const getProductData = async () => {
     try {
       const res = await fetch("/api/products");
@@ -41,7 +38,7 @@ export default function ProductList() {
     }
   };
 
-  useEffect(() => {
+ useEffect(() => {
   const fetchData = async () => {
     await getProductData();
   };
@@ -49,13 +46,10 @@ export default function ProductList() {
   fetchData();
 }, []);
 
- const router = useRouter();
+  const router = useRouter();
 
-  // delete product
-
+  
   const deleteProduct = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
-
     try {
       const res = await fetch(`/api/products/${id}`, {
         method: "DELETE",
@@ -64,14 +58,10 @@ export default function ProductList() {
       const data = await res.json();
 
       if (data.success) {
-        alert("✅ Product deleted");
-        getProductData();
-      } else {
-        alert(" Delete failed");
+        getProductData(); 
       }
     } catch (err) {
       console.error(err);
-      alert("Server error");
     }
   };
 
@@ -85,6 +75,7 @@ export default function ProductList() {
           className="bg-transparent focus:outline-none text-gray-600 w-full"
         />
       </div>
+
       <div className="border rounded-lg bg-white overflow-hidden">
         <Table>
           <TableHeader>
@@ -94,50 +85,57 @@ export default function ProductList() {
               <TableHead className="text-gray-400">Category</TableHead>
               <TableHead className="text-gray-400">Price</TableHead>
               <TableHead className="text-gray-400">Status</TableHead>
-              <TableHead className="text-right text-gray-400">
-                Actions
-              </TableHead>
+              <TableHead className="text-right text-gray-400">Actions</TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            {productData.map((value, index) => (
+            {productData?.map((value, index) => (
               <TableRow key={index} className="hover:bg-gray-50 text-gray-700">
                 <TableCell>
-                  <div className="flex items-center  gap-3">
+                  <div className="flex items-center gap-3">
                     <Avatar className="w-8 h-8 flex justify-center items-center">
-                      {value.productName?.charAt(0)}
+                      {value?.productName?.charAt(0)}
                     </Avatar>
                     <div>
-                      <div className="font-medium">{value.productName}</div>
-                      <div className="text-gray-500 text-xs">
-                        {value.engineType}
-                      </div>
+                      <div className="font-medium">{value?.productName}</div>
+                      <div className="text-gray-500 text-xs">{value?.engineType}</div>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>{value.scottPartNo}</TableCell>
-                <TableCell>{value.category}</TableCell>
-                <TableCell>{value.price}</TableCell>
+
+                <TableCell>{value?.scottPartNo}</TableCell>
+                <TableCell>{value?.category}</TableCell>
+                <TableCell>{value?.price}</TableCell>
+
                 <TableCell>
-                  <span className="">
-                    <Switch
-                      className="data-[state=checked]:bg-sky-600"
-                      checked={value.isActive}
-                    />
-                  </span>
+                  <Switch className="data-[state=checked]:bg-sky-600" checked={value?.isActive} />
                 </TableCell>
+
                 <TableCell>
                   <div className="flex justify-end gap-3">
                     <IconEdit
                       size={20}
                       className="text-gray-500 cursor-pointer"
-                      onClick={() => router.push(`/admin/product/${value.id}`)}
+                      onClick={() => router.push(`/admin/product/${value?.id}`)}
                     />
-                    <IconTrash
-                      size={20}
-                      className="text-gray-500 cursor-pointer"
-                      onClick={() => deleteProduct(value.id)}
-                    />
+
+                    
+                    <ConfirmPopup
+                      title="Are you sure you want to delete this product?"
+                      alertTitle="Delete Product"
+                      description="This action is permanent and cannot be undone."
+                      confirmText="Delete"
+                      cancelText="Cancel"
+                      onConfirm={() => deleteProduct(value?.id)}
+                    >
+                      <button className="bg-transparent hover:bg-sky-600 p-1 rounded-md">
+                        <IconTrash
+                          size={18}
+                          className="text-red-400 cursor-pointer hover:text-white"
+                        />
+                      </button>
+                    </ConfirmPopup>
                   </div>
                 </TableCell>
               </TableRow>

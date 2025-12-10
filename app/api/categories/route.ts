@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/src/db/client";
 import { categories } from "@/src/db/schema";
+import { asc } from "drizzle-orm";
 
 // CREATE CATEGORY
 export async function POST(req: Request) {
@@ -26,10 +27,18 @@ export async function POST(req: Request) {
 // GET ALL CATEGORIES
 export async function GET() {
   try {
-    const data = await db.select().from(categories);
+    const data = await db
+      .select({
+        id: categories.id,
+        categoryName: categories.categoryName,
+        description: categories.description,
+        isActive: categories.isActive,
+      })
+      .from(categories)
+      .orderBy(asc(categories.categoryName));
+
     return NextResponse.json({ success: true, data });
   } catch (error) {
-    console.error("GET ERROR:", error);
     return NextResponse.json({ success: false, error }, { status: 500 });
   }
-}
+} 

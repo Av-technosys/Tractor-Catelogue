@@ -3,7 +3,7 @@ import { db } from "@/src/db/client";
 import { products } from "@/src/db/schema";
 import { asc, eq } from "drizzle-orm";
 
-// CREATE PRODUCT
+
 
 export async function POST(req: Request) {
   try {
@@ -33,20 +33,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error }, { status: 500 });
   }
 }
-
-// GET ALL PRODUCTS
-// export async function GET() {
-//   try {
-//     const data = await db.select().from(products);
-//     return NextResponse.json({ success: true, data });
-//   } catch (error) {
-//     console.error("PRODUCT GET ERROR:", error);
-//     return NextResponse.json({ success: false, error }, { status: 500 });
-//   } 
-// }
-
-
-// final working 
 
 export async function GET(req: Request) {
   try {
