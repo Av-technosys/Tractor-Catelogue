@@ -3,13 +3,20 @@ import { db } from "@/src/db/client";
 import { categories } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function PUT(req: Request, { params }: any) {
+type UpdateCategoryBody = {
+  categoryName: string;
+  description: string;
+  isActive: boolean;
+};
+export async function PUT(req: Request) {
+
   try {
-    const id = Number(params.id);
-    const body = await req.json();
+    const { searchParams } = new URL(req.url);
+    const id = Number(searchParams.get("id"));
+    const body: UpdateCategoryBody = await req.json();
 
     const updated = await db
-      .update(categories)
+      .update(categories) 
       .set({
         categoryName: body.categoryName,
         description: body.description,

@@ -20,7 +20,7 @@ export const products = pgTable("products", {
   stdClassification: varchar("std_classification", { length: 100 }),
   price: integer("price"),
   category: varchar("category", { length: 100 }),
-
+   isActive: boolean("is_active").notNull().default(true),
   description: text("description"),
   imageUrl: text("image_url"),
 });

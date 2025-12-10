@@ -186,8 +186,8 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                      <Label>Phone</Label>
-                      <Input placeholder="+1 234 567 8900" />
+                      <Label>Password</Label>
+                      <Input placeholder="...." />
                     </div>
 
                     <Button className="mt-4 w-fit hover:bg-sky-600 bg-sky-600">

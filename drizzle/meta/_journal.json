@@ -64,6 +64,13 @@
       "when": 1764931303019,
       "tag": "0008_purple_texas_twister",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1765195075609,
+      "tag": "0009_opposite_tarot",
+      "breakpoints": true
     }
   ]
 }

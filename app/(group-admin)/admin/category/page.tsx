@@ -153,10 +153,17 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import CategoryPopup from "@/src/components/CategoryPopup";
 
+type Category = {
+  id: number;
+  categoryName: string;
+  description: string;
+  isActive: boolean;
+};
+
 export default function CategoryTable() {
   const [open, setOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [editData, setEditData] = useState(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [editData, setEditData] = useState<Category | null>(null);
 
 
   // Fetch categories from DB
@@ -173,8 +180,19 @@ export default function CategoryTable() {
   };
 
   useEffect(() => {
-    getCategories();
+    const fetchData = async () => {
+    await getCategories();
+  };
+  fetchData();
   }, []);
+
+// useEffect(() => {
+//   const fetchData = async () => {
+//     await getProductData();
+//   };
+
+//   fetchData();
+// }, []);
 
   return (
     <div className="bg-gray-100">
@@ -216,7 +234,7 @@ export default function CategoryTable() {
             </TableHeader>
 
             <TableBody>
-              {categories.map((item: any, index) => (
+              {categories.map((item: Category, index) => (
                 <TableRow key={item.id}>
                   <TableCell>{index + 1}</TableCell>
 

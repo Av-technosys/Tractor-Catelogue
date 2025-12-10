@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,14 +19,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { IconArrowLeft, IconUpload } from "@tabler/icons-react";
-import React, { useState } from "react";
+import { IconArrowLeft } from "@tabler/icons-react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Switch } from "@/components/ui/switch";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 const Page = () => {
+  const { id } = useParams();
   const router = useRouter();
+
   const [productName, setProductName] = useState("");
   const [engineType, setEngineType] = useState("");
   const [scottPartNo, setScottPartNo] = useState("");
@@ -39,46 +42,6 @@ const Page = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async () => {
-    setLoading(true);
-
-    const payload = {
-      productName,
-      engineType,
-      scottPartNo,
-      oePartNo,
-      pieces: Number(pieces),
-      metalType,
-      stdClassification,
-      price: Number(price),
-      category,
-      description,
-      imageUrl,
-      isActive,
-    };
-
-    try {
-      const res = await fetch("/api/products", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        alert("Product Created");
-        router.push("/admin/product");
-      } else {
-        alert("Something went wrong");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Server error");
-    }
-
-    setLoading(false);
-  };
 
   const categories = [
     "Engine Parts",
@@ -108,6 +71,85 @@ const Page = () => {
     "Steel/Organic",
   ];
 
+  // ✅ Fetch product by ID and prefill form
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/products?id=${id}`);
+        const json = await res.json();
+
+        console.log("API RESPONSE:", json);
+
+        if (json.success && json.data) {
+          const p = json.data;
+
+          setProductName(p.productName || "");
+          setEngineType(p.engineType || "");
+          setScottPartNo(p.scottPartNo || "");
+          setOePartNo(p.oePartNo || "");
+          setPieces(String(p.pieces || ""));
+          setMetalType(p.metalType || "");
+          setStdClassification(p.stdClassification || "");
+          setPrice(String(p.price || ""));
+          setCategory(p.category || "");
+          setDescription(p.description || "");
+          setImageUrl(p.imageUrl || "");
+          setIsActive(p.isActive ?? true);
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  // ✅ PUT update
+  const handleSubmit = async () => {
+    if (!id) return;
+
+    setLoading(true);
+
+    const payload = {
+      productName,
+      engineType,
+      scottPartNo,
+      oePartNo,
+      pieces: Number(pieces),
+      metalType,
+      stdClassification,
+      price: Number(price),
+      category,
+      description,
+      imageUrl,
+      isActive,
+    };
+
+    try {
+      const res = await fetch(`/api/products/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert("✅ Product Updated");
+        router.push("/admin/product");
+      } else {
+        alert("❌ Update Failed");
+      }
+    } catch (error) {
+      console.error("Update error:", error);
+      alert("Server error");
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div className="bg-gray-100 max-w-7xl mx-auto">
       <div className="flex items-center gap-4 bg-white shadow-sm p-5">
@@ -116,14 +158,15 @@ const Page = () => {
             <IconArrowLeft size={22} />
           </Button>
         </Link>
-        <h1 className="text-2xl font-semibold">Add New Product</h1>
+
+        <h1 className="text-2xl font-semibold">Edit Product</h1>
       </div>
 
       <div className="p-15 max-sm:p-10 max-md:overflow-x-auto">
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Basic Information</CardTitle>
-            <CardDescription>Enter the product details</CardDescription>
+            <CardDescription>Update product details</CardDescription>
           </CardHeader>
 
           <CardContent>
@@ -131,10 +174,9 @@ const Page = () => {
               <div className="flex flex-col gap-2">
                 <Label>Product Name</Label>
                 <Input
-                  className="bg-gray-50"
-                  placeholder="e.g., Piston Ring Set"
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
+                  className="bg-gray-50"
                 />
               </div>
 
@@ -145,7 +187,6 @@ const Page = () => {
                     <SelectTrigger className="w-full bg-gray-50">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
-
                     <SelectContent>
                       <SelectGroup>
                         {categories.map((cat) => (
@@ -181,19 +222,17 @@ const Page = () => {
                 <div className="flex flex-col gap-2">
                   <Label>SCOTT Part No.</Label>
                   <Input
-                    className="bg-gray-50"
-                    placeholder="e.g., SPR-4C-001"
                     value={scottPartNo}
                     onChange={(e) => setScottPartNo(e.target.value)}
+                    className="bg-gray-50"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label>OE Part No.</Label>
                   <Input
-                    className="bg-gray-50"
-                    placeholder="e.g., OE-89234567"
                     value={oePartNo}
                     onChange={(e) => setOePartNo(e.target.value)}
+                    className="bg-gray-50"
                   />
                 </div>
               </div>
@@ -202,12 +241,12 @@ const Page = () => {
                 <div className="flex flex-col gap-2">
                   <Label>Number of Pieces</Label>
                   <Input
-                    className="bg-gray-50"
-                    placeholder="1"
                     value={pieces}
                     onChange={(e) => setPieces(e.target.value)}
+                    className="bg-gray-50"
                   />
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <Label>Metal Type</Label>
                   <Select value={metalType} onValueChange={setMetalType}>
@@ -225,13 +264,13 @@ const Page = () => {
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <Label>STD</Label>
                   <Input
-                    className="bg-gray-50"
-                    placeholder="Standard"
                     value={stdClassification}
                     onChange={(e) => setStdClassification(e.target.value)}
+                    className="bg-gray-50"
                   />
                 </div>
               </div>
@@ -239,20 +278,18 @@ const Page = () => {
               <div className="flex flex-col gap-2">
                 <Label>Price ($)</Label>
                 <Input
-                  className="bg-gray-50"
-                  placeholder="0"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
+                  className="bg-gray-50"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
                 <Label>Description</Label>
                 <Textarea
-                  className="bg-gray-50"
-                  placeholder="Enter product description..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  className="bg-gray-50"
                 />
               </div>
             </form>
@@ -261,73 +298,34 @@ const Page = () => {
 
         <Card className="border rounded-xl shadow-sm mt-10">
           <CardHeader>
-            <CardTitle className="text-2xl font-semibold">
-              Product Images
-            </CardTitle>
-            <CardDescription>
-              Upload product images (multiple files supported)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div
-              className="border-2 border-dashed rounded-xl py-16 max-sm:px-7 max-sm:py-8 flex flex-col items-center justify-center text-center"
-            >
-              <IconUpload
-                size={35}
-                className="bg-gray-50 border p-1 rounded-full"
-              />
-              <p className="text-xl mt-6">Click to upload or drag and drop</p>
-              <p className="text-md mt-3">PNG, JPG up to 10MB</p>
-
-              <Button className="relative overflow-hidden mt-8 bg-transparent text-black hover:text-white border hover:bg-sky-600">
-                Select Files
-                <input
-                  type="file"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  onChange={(e) =>
-                    setImageUrl(e.target.files?.[0]?.name || "")
-                  }
-                />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border rounded-xl shadow-sm mt-10">
-          <CardHeader>
-            <CardTitle className="text-2xl font-semibold">
-              Product Status
-            </CardTitle>
+            <CardTitle className="text-2xl font-semibold">Product Status</CardTitle>
             <div className="flex items-center justify-between">
-              <p>
-                <CardTitle className="text-xl text-gray-500 mt-4">
-                  Active Status
-                </CardTitle>
-                <CardDescription>
-                  Make this product visible in the catalog
-                </CardDescription>
-              </p>
+              <CardDescription>
+                Make this product visible in the catalog
+              </CardDescription>
               <Switch
-                className="mr-4 data-[state=checked]:bg-sky-600"
                 checked={isActive}
                 onCheckedChange={setIsActive}
-              ></Switch>
+                className="mr-4 data-[state=checked]:bg-sky-600"
+              />
             </div>
           </CardHeader>
-          <CardContent></CardContent>
         </Card>
 
         <div className="flex gap-4 mt-10">
           <Button
             className="bg-sky-600 hover:bg-sky-500 w-[80%] py-5"
             onClick={handleSubmit}
+            disabled={loading}
           >
-            {loading ? "Saving..." : "Create Product"}
+            {loading ? "Updating..." : "Update Product"}
           </Button>
 
-          <Button className="text-black hover:bg-sky-600 hover:text-white bg-transparent w-[15%] py-5 border-2 border-gray-200">
-            <Link href="/admin/product"> Cancel</Link>
-          </Button>
+          <Link href="/admin/product" className="w-[15%]">
+            <Button className="w-full bg-transparent text-black border hover:bg-sky-600 hover:text-white py-5">
+              Cancel
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
@@ -335,4 +333,3 @@ const Page = () => {
 };
 
 export default Page;
-

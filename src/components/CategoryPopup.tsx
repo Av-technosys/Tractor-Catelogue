@@ -1,34 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
-const CategoryPopup = ({ open, onClose, refresh, editData }) => {
-  if (!open) return null;
+// Type for category
+type Category = {
+  id: number;
+  categoryName: string;
+  description: string;
+  isActive: boolean;
+};
 
+// Props type
+interface CategoryPopupProps {
+  open: boolean;
+  onClose: () => void;
+  refresh: () => void;
+  editData: Category | null;
+}
+
+const CategoryPopup: React.FC<CategoryPopupProps> = ({
+  open,
+  onClose,
+  refresh,
+  editData,
+}) => {
   const isEdit = !!editData;
 
   // Form States
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [isActive, setIsActive] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [isActive, setIsActive] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Prefill values if editing
+  // Prefill values if editing (fix React warning with startTransition)
   useEffect(() => {
-    if (isEdit) {
-      setName(editData.categoryName);
-      setDescription(editData.description || "");
-      setIsActive(editData.isActive);
-    } else {
-      setName("");
-      setDescription("");
-      setIsActive(true);
-    }
-  }, [editData]);
+    startTransition(() => {
+      if (isEdit && editData) {
+        setName(editData.categoryName);
+        setDescription(editData.description || "");
+        setIsActive(editData.isActive);
+      } else {
+        setName("");
+        setDescription("");
+        setIsActive(true);
+      }
+    });
+  }, [editData, isEdit]);
+
+  if (!open) return null;
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -40,7 +63,7 @@ const CategoryPopup = ({ open, onClose, refresh, editData }) => {
     };
 
     const url = isEdit
-      ? `/api/categories/${editData.id}`
+      ? `/api/categories/${editData!.id}`
       : `/api/categories`;
 
     const method = isEdit ? "PUT" : "POST";
@@ -71,7 +94,6 @@ const CategoryPopup = ({ open, onClose, refresh, editData }) => {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
       <div className="bg-white p-8 rounded-xl shadow-xl w-[80vh] max-sm:w-3/4">
-
         <h2 className="text-xl font-semibold">
           {isEdit ? "Edit Category" : "Add Category"}
         </h2>
@@ -103,7 +125,6 @@ const CategoryPopup = ({ open, onClose, refresh, editData }) => {
             {loading ? "Saving..." : isEdit ? "Save Changes" : "Create"}
           </Button>
         </div>
-
       </div>
     </div>
   );
