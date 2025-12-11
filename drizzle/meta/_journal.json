@@ -71,6 +71,41 @@
       "when": 1765195075609,
       "tag": "0009_opposite_tarot",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1765439655742,
+      "tag": "0010_long_stature",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1765444226107,
+      "tag": "0011_lucky_expediter",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1765444517043,
+      "tag": "0012_magenta_shooting_star",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1765444632104,
+      "tag": "0013_lovely_northstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1765444976285,
+      "tag": "0014_worried_changeling",
+      "breakpoints": true
     }
   ]
 }

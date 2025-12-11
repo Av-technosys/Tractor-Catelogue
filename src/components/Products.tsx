@@ -29,9 +29,12 @@ const Products = ({
       const res = await fetch("/api/products");
       const data = await res.json();
 
-      setProductData(data.data);
+      // Ensure we always set an array (API might return undefined/null)
+      const items = data?.data || [];
 
-      return data.data; // <-- yaha data return kiya (count ke liye)
+      setProductData(items);
+
+      return items; // <-- return array for count
     } catch (error) {
       console.log("error fetching products", error);
       return [];
@@ -42,7 +45,8 @@ const Products = ({
     const fetchData = async () => {
       const data = await getProductData();
 
-      onCountChange(data.length);
+      // Guard in case getProductData returns undefined — ensure we pass a number
+      onCountChange(Array.isArray(data) ? data.length : 0);
     };
 
     fetchData();
@@ -50,9 +54,9 @@ const Products = ({
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-0">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        {productData
-          .filter((item) => item.isActive)
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+        {(productData || [])
+          .filter((item) => item?.isActive)
           .map((item, index) => (
             <Card key={index} className="rounded-xl overflow-hidden border">
               <CardHeader className="p-0">
@@ -61,7 +65,7 @@ const Products = ({
                     src={item?.imageUrl}
                     alt={item?.productName}
                     width={300}
-                    height={300}
+                    height={200}
                     className="object-cover"
                   />
                 </div>
