@@ -34,6 +34,7 @@ export async function POST(req: Request) {
   }
 }
 
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -43,7 +44,7 @@ export async function GET(req: Request) {
         .select()
         .from(products)
         .orderBy(asc(products.productName))
-        .where(eq(products.id, Number(id)));
+        .where(eq(products.id, Number(id),));
 
       return NextResponse.json({ success: true, data: data[0] });
     }
@@ -56,4 +57,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false, error }, { status: 500 });
   }
 }
+
+
+
 
