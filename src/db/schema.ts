@@ -11,8 +11,8 @@ import {
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
 
-  productName: varchar("product_name", { length: 255 }).notNull(),
-  engineType: varchar("engine_type", { length: 100 }),
+  productName: varchar("product_name", { length: 100 }).notNull(),
+  engineType: varchar("engine_type", { length: 255 }).notNull(),
   scottPartNo: varchar("scott_part_no", { length: 100 }),
   oePartNo: varchar("oe_part_no", { length: 100 }),
   pieces: integer("pieces"),

@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-blue-600 text-white flex items-center justify-center rounded-xl text-xl font-semibold">
+            <div className="w-12 h-12 bg-sky-600 text-white flex items-center justify-center rounded-xl text-xl font-semibold">
               S
             </div>
             <h1 className="text-2xl font-semibold">SCOTT Parts</h1>

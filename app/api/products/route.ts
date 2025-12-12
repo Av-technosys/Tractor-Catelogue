@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/src/db/client";
 import { products } from "@/src/db/schema";
-import { asc, eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 
 
@@ -43,13 +43,12 @@ export async function GET(req: Request) {
       const data = await db
         .select()
         .from(products)
-        .orderBy(asc(products.productName))
         .where(eq(products.id, Number(id),));
 
       return NextResponse.json({ success: true, data: data[0] });
     }
 
-    const data = await db.select().from(products);
+    const data = await db.select().from(products).orderBy(desc(products));
     return NextResponse.json({ success: true, data });
 
   } catch (error) {
