@@ -14,6 +14,7 @@ import { Slider } from "@/components/ui/slider";
 export default function Page() {
 
 const [count, setCount] = useState(0);
+const [searchText, setSearchText] = useState("");
 
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-10 ">
@@ -30,6 +31,8 @@ const [count, setCount] = useState(0);
           <Input
             placeholder="Search by part number, name..."
             className="mb-4"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
           />
           <Select>
             <SelectTrigger className="w-full mb-3">
@@ -65,7 +68,7 @@ const [count, setCount] = useState(0);
           </Button>
         </div>
         <div className="col-span-12 md:col-span-8 lg:col-span-9">
-          <Products onCountChange={setCount} />
+          <Products onCountChange={setCount} search={searchText} />
         </div>
       </div>
     </div>

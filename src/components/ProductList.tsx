@@ -26,8 +26,14 @@ type Product = {
 
 export default function ProductList() {
   const [productData, setProductData] = useState<Product[]>([]);
+  const [search, setSearch] = useState("");
+  const filteredProducts = productData.filter(
+    (item) =>
+      item.productName.toLowerCase().includes(search.toLowerCase()) ||
+      item.scottPartNo.toLowerCase().includes(search.toLowerCase()) ||
+      item.category.toLowerCase().includes(search.toLowerCase())
+  );
 
-  
   const getProductData = async () => {
     try {
       const res = await fetch("/api/products");
@@ -38,17 +44,16 @@ export default function ProductList() {
     }
   };
 
- useEffect(() => {
-  const fetchData = async () => {
-    await getProductData();
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      await getProductData();
+    };
 
-  fetchData();
-}, []);
+    fetchData();
+  }, []);
 
   const router = useRouter();
 
-  
   const deleteProduct = async (id: number) => {
     try {
       const res = await fetch(`/api/products/${id}`, {
@@ -58,7 +63,7 @@ export default function ProductList() {
       const data = await res.json();
 
       if (data.success) {
-        getProductData(); 
+        getProductData();
       }
     } catch (err) {
       console.error(err);
@@ -73,6 +78,8 @@ export default function ProductList() {
           type="text"
           placeholder="Search products..."
           className="bg-transparent focus:outline-none text-gray-600 w-full"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
@@ -85,12 +92,14 @@ export default function ProductList() {
               <TableHead className="text-gray-400">Category</TableHead>
               <TableHead className="text-gray-400">Price</TableHead>
               <TableHead className="text-gray-400">Status</TableHead>
-              <TableHead className="text-right text-gray-400">Actions</TableHead>
+              <TableHead className="text-right text-gray-400">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {productData?.map((value, index) => (
+            {filteredProducts?.map((value, index) => (
               <TableRow key={index} className="hover:bg-gray-50 text-gray-700">
                 <TableCell>
                   <div className="flex items-center gap-3">
@@ -99,7 +108,9 @@ export default function ProductList() {
                     </Avatar>
                     <div>
                       <div className="font-medium">{value?.productName}</div>
-                      <div className="text-gray-500 text-xs">{value?.engineType}</div>
+                      <div className="text-gray-500 text-xs">
+                        {value?.engineType}
+                      </div>
                     </div>
                   </div>
                 </TableCell>
@@ -109,7 +120,10 @@ export default function ProductList() {
                 <TableCell>{value?.price}</TableCell>
 
                 <TableCell>
-                  <Switch className="data-[state=checked]:bg-sky-600" checked={value?.isActive} />
+                  <Switch
+                    className="data-[state=checked]:bg-sky-600"
+                    checked={value?.isActive}
+                  />
                 </TableCell>
 
                 <TableCell>
@@ -120,7 +134,6 @@ export default function ProductList() {
                       onClick={() => router.push(`/admin/product/${value?.id}`)}
                     />
 
-                    
                     <ConfirmPopup
                       title="Are you sure you want to delete this product?"
                       alertTitle="Delete Product"

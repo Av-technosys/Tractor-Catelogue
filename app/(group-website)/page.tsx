@@ -71,7 +71,7 @@ const Home = () => {
         </Button>
       </div>
 
-      <Products onCountChange={() => {}} />
+      <Products onCountChange={() => {}}  search=""/>
       {/* </div> */}
       <div className="w-full max-w-6xl mx-auto py-10 px-4 bg-gray-50">
         <div className="w-full rounded-3xl py-16 flex flex-col items-center justify-center text-center text-white bg-sky-600">

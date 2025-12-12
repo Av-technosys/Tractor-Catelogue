@@ -1,7 +1,7 @@
 import { db } from "@/src/db/client";
 import { products } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
-import Image from "next/image";
+
 
 
 export default async function CategoryPage(props: { params: Promise<{ id: string }> }) {

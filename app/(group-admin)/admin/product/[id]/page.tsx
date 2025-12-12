@@ -46,7 +46,7 @@ const Page = () => {
   // 🟢 New State: Success Popup
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const categories = [
+  const categories = [           // get data from api
     "Engine Parts",
     "Transmission Parts",
     "Body Parts",
@@ -57,7 +57,7 @@ const Page = () => {
     "Others",
   ];
 
-  const engineCategories = [
+  const engineCategories = [   // text field
     "4-Cylinder Diesel",
     "6-Cylinder Diesel",
     "8-Cylinder Diesel",
@@ -65,7 +65,7 @@ const Page = () => {
     "Universal",
   ];
 
-  const metalCategories = [
+  const metalCategories = [  // text field
     "Steel",
     "Aluminium",
     "Brass",
