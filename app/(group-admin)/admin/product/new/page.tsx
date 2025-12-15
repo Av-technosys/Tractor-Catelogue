@@ -39,7 +39,7 @@ const Page = () => {
   const [metalType, setMetalType] = useState("");
   const [stdClassification, setStdClassification] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isActive, setIsActive] = useState(true);
@@ -47,6 +47,7 @@ const Page = () => {
 
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string[]>([]);
+  const [categoryName, setCategoryName] = useState("");
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -60,11 +61,14 @@ const Page = () => {
       metalType,
       stdClassification,
       price: Number(price),
-      category,
+      categoryId,
       description,
       imageUrl,
       isActive,
+      category: categoryName,
     };
+
+    console.log("payload", payload);
 
     try {
       const res = await fetch("/api/products", {
@@ -86,9 +90,8 @@ const Page = () => {
     setLoading(false);
   };
 
-  // get api for categories
   const [categories, setCategories] = useState<Category[]>([]);
-  useEffect(() => {
+ useEffect(() => {
   const fetchCategories = async () => {
     try {
       const res = await fetch("/api/categories");
@@ -100,7 +103,7 @@ const Page = () => {
     }
   };
 
-
+ 
     fetchCategories();
   }, []);
 
@@ -137,10 +140,20 @@ const Page = () => {
               <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6">
                 <div className="flex flex-col gap-2">
                   <Label>Category</Label>
-                  <Select value={category} onValueChange={setCategory}>
+                  <Select
+                    onValueChange={(value) => {
+                      const selectedCategory = categories.find(
+                        (cat) => String(cat.id) === value
+                      );
+
+                      setCategoryId(value);
+                      setCategoryName(selectedCategory?.categoryName || "");
+                    }}
+                  >
                     <SelectTrigger className="w-full bg-gray-50">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
+
                     <SelectContent>
                       <SelectGroup>
                         {categories.map((cat) => (

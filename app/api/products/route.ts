@@ -21,6 +21,7 @@ export async function POST(req: Request) {
         stdClassification: body.stdClassification,
         price: body.price,
         category: body.category,
+        categoryId: Number(body.categoryId),
         description: body.description,
         imageUrl: body.imageUrl,
         isActive: body.isActive
