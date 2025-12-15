@@ -24,7 +24,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Switch } from "@/components/ui/switch";
 import { useParams, useRouter } from "next/navigation";
-
+type Category = {
+  id: number;
+  categoryName: string;
+};
 const Page = () => {
   const { id } = useParams();
   const router = useRouter();
@@ -38,43 +41,29 @@ const Page = () => {
   const [stdClassification, setStdClassification] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
-
-  // 🟢 New State: Success Popup
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const categories = [           // get data from api
-    "Engine Parts",
-    "Transmission Parts",
-    "Body Parts",
-    "Electrical Parts",
-    "Steering",
-    "Brakes",
-    "Hydraulic",
-    "Others",
-  ];
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  const engineCategories = [   // text field
-    "4-Cylinder Diesel",
-    "6-Cylinder Diesel",
-    "8-Cylinder Diesel",
-    "4-Cylinder Petrol",
-    "Universal",
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/categories");
+        const json = await res.json();
+        setCategories(json.data || []);
+      } catch (err) {
+        console.error("Category fetch error", err);
+      }
+    };
 
-  const metalCategories = [  // text field
-    "Steel",
-    "Aluminium",
-    "Brass",
-    "Plastic/Glass",
-    "Ceramic",
-    "Steel/Organic",
-  ];
+    fetchCategories();
+  }, []);
 
-  // Fetch product
   useEffect(() => {
     if (!id) return;
 
@@ -95,6 +84,7 @@ const Page = () => {
           setStdClassification(p.stdClassification || "");
           setPrice(String(p.price || ""));
           setCategory(p.category || "");
+          setCategoryId(String(p.categoryId || ""));
           setDescription(p.description || "");
           setImageUrl(p.imageUrl || "");
           setIsActive(p.isActive ?? true);
@@ -107,7 +97,6 @@ const Page = () => {
     fetchProduct();
   }, [id]);
 
-  // UPDATE product
   const handleSubmit = async () => {
     if (!id) return;
 
@@ -122,6 +111,7 @@ const Page = () => {
       metalType,
       stdClassification,
       price: Number(price),
+      categoryId: Number(categoryId),
       category,
       description,
       imageUrl,
@@ -138,7 +128,6 @@ const Page = () => {
       const data = await res.json();
 
       if (data.success) {
-        // 🟢 Show success popup instead of redirect
         setShowSuccess(true);
       }
     } catch (error) {
@@ -148,7 +137,6 @@ const Page = () => {
     setLoading(false);
   };
 
-  // OK Button → Close popup + redirect
   const handleSuccessClose = () => {
     setShowSuccess(false);
     router.push("/admin/product");
@@ -187,15 +175,24 @@ const Page = () => {
               <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6">
                 <div className="flex flex-col gap-2">
                   <Label>Category</Label>
-                  <Select value={category} onValueChange={setCategory}>
+                  <Select
+                    value={category}
+                    onValueChange={(value) => {
+                      const selected = categories.find(
+                        (c) => c.categoryName === value
+                      );
+                      setCategory(value);
+                      setCategoryId(String(selected?.id || ""));
+                    }}
+                  >
                     <SelectTrigger className="w-full bg-gray-50">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         {categories.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
+                          <SelectItem key={cat.id} value={cat.categoryName}>
+                            {cat.categoryName}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -205,20 +202,12 @@ const Page = () => {
 
                 <div className="flex flex-col gap-2">
                   <Label>Engine Type</Label>
-                  <Select value={engineType} onValueChange={setEngineType}>
-                    <SelectTrigger className="w-full bg-gray-50">
-                      <SelectValue placeholder="Select engine type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {engineCategories.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    className="bg-gray-50"
+                    placeholder="e.g., Piston Ring Set"
+                    value={engineType}
+                    onChange={(e) => setEngineType(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -253,20 +242,12 @@ const Page = () => {
 
                 <div className="flex flex-col gap-2">
                   <Label>Metal Type</Label>
-                  <Select value={metalType} onValueChange={setMetalType}>
-                    <SelectTrigger className="w-full bg-gray-50">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {metalCategories.map((cat) => (
-                          <SelectItem key={cat} value={cat}>
-                            {cat}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    className="bg-gray-50"
+                    placeholder="e.g., steel"
+                    value={metalType}
+                    onChange={(e) => setMetalType(e.target.value)}
+                  />
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -335,7 +316,6 @@ const Page = () => {
         </div>
       </div>
 
-      {/* 🟢 SUCCESS POPUP */}
       {showSuccess && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-8 shadow-xl text-center w-[90%] max-w-sm">

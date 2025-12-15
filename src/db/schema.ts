@@ -28,12 +28,6 @@ export const products = pgTable("products", {
     .notNull()
     .references(() => categories.id),
 });
-// export const categories = pgTable("categories", {
-//   id: serial("id").primaryKey(),
-//   categoryName: varchar("category_name", { length: 255 }).notNull(),
-//   description: text("description"),
-//   imageUrl: text("image_url"),
-// });
 
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),

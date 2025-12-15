@@ -27,12 +27,15 @@ type Product = {
 export default function ProductList() {
   const [productData, setProductData] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
-  const filteredProducts = productData.filter(
-    (item) =>
-      item.productName.toLowerCase().includes(search.toLowerCase()) ||
-      item.scottPartNo.toLowerCase().includes(search.toLowerCase()) ||
-      item.category.toLowerCase().includes(search.toLowerCase())
+ const filteredProducts = productData.filter((item) => {
+  const query = search.toLowerCase();
+
+  return (
+    item.productName?.toLowerCase().includes(query) ||
+    item.scottPartNo?.toLowerCase().includes(query) ||
+    item.category?.toLowerCase().includes(query)
   );
+});
 
   const getProductData = async () => {
     try {

@@ -6,17 +6,17 @@ import {
   IconShare,
   IconUpload,
 } from "@tabler/icons-react";
-const DashboardGrid = () => {
+const DashboardGrid = ({totalProducts,totalCategories}) => {
   const stats = [
     {
       title: "Total Products",
-      value: "6",
+      value: totalProducts,
       desc: "Active in catalog",
       icon: IconCube,
     },
     {
       title: "Active Categories",
-      value: "8",
+      value: totalCategories,
       desc: "Product categories",
       icon: IconCategory,
     },
