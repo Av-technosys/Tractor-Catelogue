@@ -14,8 +14,63 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useEffect, useState } from "react";
+
+type user = {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+  role:string;
+};
 
 export default function ProfilePage() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const payload = {
+      username,
+      email,
+      password,
+      role,
+    };
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!username || !email || !password) {
+    alert("Please fill all fields");
+    return;
+  }
+  // if (!emailRegex.test(email)) {
+  //   alert("Please enter a valid email address (e.g., name@gmail.com)");
+  //   return;
+  // }
+    try {
+      const res = await fetch("/api/users", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      console.log(" user api data", data);
+      if (data.success) {
+        setUserData((prev) => [data.data, ...prev]);
+      }
+      setUsername("");
+      setEmail("");    
+      setPassword("");
+      setRole("");
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  };
+
   const profileData = [
     {
       avatar: "CN",
@@ -24,38 +79,56 @@ export default function ProfilePage() {
       defaultEmail: "akansha@avtechnosys.com",
     },
   ];
-  const users = [
-    {
-      img: "CN",
-      name: "Khushi ",
-      email: "khushi@gmail.com",
-      password: "siddhi@123",
-    },
-    {
-      img: "CN",
-      name: "Prakhar",
-      email: "Prakhar@gmail.com",
-      password: "Prakhar@123",
-    },
-    {
-      img: "CN",
-      name: "Ajay",
-      email: "ajay@avtechnosys.com",
-      password: "Ajay123",
-    },
-    {
-      img: "CN",
-      name: "Bhavesh",
-      email: "bhavesh@gmail.com",
-      password: "Bhavesh",
-    },
-    {
-      img: "CN",
-      name: "Shalini",
-      email: "shalini@gmail.com",
-      password: "Sh@123",
-    },
-  ];
+
+  const [userData, setUserData] = useState<user[]>([]);
+  const getUserData = async () => {
+    try {
+      const res = await fetch("/api/users");
+      const data = await res.json();
+      setUserData(data.data);
+    } catch (error) {
+      console.log("error fetching users", error);
+    }
+  };
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  const [newPasswords, setNewPasswords] = useState({});
+  const updatePassword = async (id: number) => {
+    const newPassword = newPasswords[id];
+    try {
+      const res = await fetch(`/api/users/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: newPassword }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Password updated successfully!");
+        setNewPasswords((prev) => ({ ...prev, [id]: "" }));
+        getUserData();
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (err) {
+      console.error("Update error:", err);
+    }
+  };
+
+  const deleteProduct = async (id: number) => {
+    try {
+      const res = await fetch(`/api/users/${id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success) {
+        getUserData();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -117,46 +190,67 @@ export default function ProfilePage() {
                         <TableHead>Email</TableHead>
                         <TableHead>Last Password</TableHead>
                         <TableHead>New Password</TableHead>
+                        <TableHead>Role</TableHead>
                         <TableHead className="text-center">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
 
                     <TableBody>
-                      {users.map((user, index) => (
+                      {userData.map((user, index) => (
                         <TableRow
                           key={index}
                           className="border-b border-gray-200 hover:bg-gray-50"
                         >
                           <TableCell className="flex items-center gap-3 py-4">
                             <div className="bg-gray-400 rounded-full">
-                              <Avatar>{user.img}</Avatar>
+                              <Avatar>{user?.username}</Avatar>
                             </div>
                             <div className="flex flex-col">
                               <span className="font-semibold text-gray-900">
-                                {user.name}
+                                {user?.username}
                               </span>
                             </div>
                           </TableCell>
 
                           <TableCell className="text-blue-600">
-                            {user.email}
+                            {user?.email}
                           </TableCell>
 
                           <TableCell>
                             <span className="text-gray-600 bg-gray-100 rounded-md">
-                              {user.password}
+                              {user?.password}
                             </span>
                           </TableCell>
 
                           <TableCell>
-                            <Input placeholder="New password" />
+                            <Input
+                              placeholder="New password"
+                              value={newPasswords[user.id] || ""}
+                              onChange={(e) =>
+                                setNewPasswords({
+                                  ...newPasswords,
+                                  [user.id]: e.target.value,
+                                })
+                              }
+                            />
+                          </TableCell>
+                           <TableCell>
+                            <span className="text-gray-600 bg-gray-100 rounded-md">
+                              {user?.role}
+                            </span>
                           </TableCell>
                           <TableCell>
                             <div className="flex justify-center gap-2">
-                              <Button className="bg-sky-600 hover:bg-sky-600 text-white">
+                              <Button
+                                onClick={() => updatePassword(user.id)}
+                                className="bg-sky-600 hover:bg-sky-600 text-white"
+                              >
                                 Change
                               </Button>
-                              <Button className="bg-sky-600 hover:bg-sky-600 text-white">
+                              <Button
+                                onClick={() => deleteProduct(user.id)}
+                                className="bg-sky-600 hover:bg-sky-600 text-white"
+                              >
                                 Delete
                               </Button>
                             </div>
@@ -177,21 +271,45 @@ export default function ProfilePage() {
                   <div className="mt-8 space-y-5">
                     <div className="flex flex-col gap-2">
                       <Label>Full Name</Label>
-                      <Input />
+                      <Input
+                        placeholder="Full Name"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                      />
                     </div>
 
                     <div className="flex flex-col gap-2">
                       <Label>Email</Label>
-                      <Input />
+                      <Input
+                      type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
                     </div>
 
                     <div className="flex flex-col gap-2">
                       <Label>Password</Label>
-                      <Input placeholder="...." />
+                      <Input
+                        placeholder="Create password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label>Role</Label>
+                      <Input
+                        placeholder="Role"
+                        value={role}
+                        onChange={(e) => setRole(e.target.value)}
+                      />
                     </div>
 
-                    <Button className="mt-4 w-fit hover:bg-sky-600 bg-sky-600">
-                      Add User
+                    <Button
+                      onClick={handleSubmit}
+                      className="mt-4 w-fit hover:bg-sky-600 bg-sky-600"
+                    >
+                      {loading ? "Saving..." : "ADD USER"}
                     </Button>
                   </div>
                 </CardContent>
