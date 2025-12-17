@@ -164,14 +164,14 @@ const Page = () => {
           <CardContent>
             <form className="grid gap-6">
               <div className="flex flex-col gap-2">
-                <Label>Product Name</Label>
+                <Label>Engine Type Name</Label>
                 <Input
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
                   className="bg-gray-50"
                 />
               </div>
-
+    
               <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6">
                 <div className="flex flex-col gap-2">
                   <Label>Category</Label>
@@ -201,7 +201,7 @@ const Page = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <Label>Engine Type</Label>
+                  <Label>Product Name</Label>
                   <Input
                     className="bg-gray-50"
                     placeholder="e.g., Piston Ring Set"

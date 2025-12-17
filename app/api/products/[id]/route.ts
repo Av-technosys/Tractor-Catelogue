@@ -40,22 +40,37 @@ export async function PUT(req: Request, {params}) {
   }
 }
 
-export async function DELETE(req: Request, {params}) {
+export async function DELETE(req: Request, { params }) {
   try {
-    const id  = await params;  
+
+    const resolvedParams = await params;
+    const productId = resolvedParams.id;
+
+    if (!productId) {
+      return NextResponse.json(
+        { success: false, error: "Product ID is missing" },
+        { status: 400 }
+      );
+    }
     const deleted = await db
       .delete(products)
-      .where(eq(products.id,id))
+      .where(eq(products.id, productId))
       .returning();
+    if (deleted.length === 0) {
+      return NextResponse.json(
+        { success: false, error: "Product not found" },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
       data: deleted[0],
     });
   } catch (error) {
-    console.error(error);
+    console.error("Product Delete Error:", error);
     return NextResponse.json(
-      { success: false, error },
+      { success: false, error: "Internal Server Error" },
       { status: 500 }
     );
   }

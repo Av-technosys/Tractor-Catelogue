@@ -128,13 +128,13 @@ const Page = () => {
           <CardContent>
             <form className="grid gap-6">
               <div className="flex flex-col gap-2">
-                <Label>Engine Type Name</Label>
-                <Input
-                  className="bg-gray-50"
-                  placeholder="e.g., Piston Ring Set"
-                  value={engineType}
-                  onChange={(e) => setEngineType(e.target.value)}
-                />
+                  <Label>Engine Type Name</Label>
+                  <Input
+                    className="bg-gray-50"
+                    placeholder="e.g., Piston Ring Set"      
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                  />
               </div>
 
               <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6">
@@ -167,13 +167,14 @@ const Page = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <Label>Product Name</Label>
-                  <Input
-                    className="bg-gray-50"
-                    placeholder="e.g., EICHER TRACTOR"
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                  />
+                
+                   <Label>Product Name</Label>
+                <Input
+                  className="bg-gray-50"
+                  placeholder=" e.g., EICHER TRACTOR"
+                  value={engineType}
+                  onChange={(e) => setEngineType(e.target.value)}
+                />
                 </div>
               </div>
 
