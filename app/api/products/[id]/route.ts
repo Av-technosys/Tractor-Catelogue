@@ -42,9 +42,7 @@ export async function PUT(req: Request, {params}) {
 
 export async function DELETE(req: Request, {params}) {
   try {
-    const { id } = await params;  
-    
-
+    const id  = await params;  
     const deleted = await db
       .delete(products)
       .where(eq(products.id,id))
