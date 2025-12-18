@@ -286,6 +286,8 @@ const Page = () => {
                   src={`https://ik.imagekit.io/y3ypqdyxmq/${img.filePath}`}
                   className="w-24 h-24 object-cover rounded border"
                   alt="Uploaded"
+                  width={300}
+                  height={300}
                 />
               ))}
             </div>

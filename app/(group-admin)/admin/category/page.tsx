@@ -117,8 +117,8 @@ export default function CategoryTable() {
                       {item.description}
                     </TableCell>
 
-                    <TableCell>
-                      <Switch checked={item.isActive} />
+                    <TableCell >
+                      <Switch className="data-[state=checked]:bg-sky-600" checked={item.isActive} />
                     </TableCell>
 
                     <TableCell>

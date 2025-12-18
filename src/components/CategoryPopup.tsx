@@ -123,7 +123,7 @@ const CategoryPopup: React.FC<CategoryPopupProps> = ({
 
           <div className="flex items-center justify-between mb-6">
             <label className="font-medium">Active</label>
-            <Switch checked={isActive} onCheckedChange={setIsActive} />
+            <Switch className="data-[state=checked]:bg-sky-600" checked={isActive} onCheckedChange={setIsActive} />
           </div>
 
           <div className="flex justify-end gap-3">
@@ -131,7 +131,7 @@ const CategoryPopup: React.FC<CategoryPopupProps> = ({
               Cancel
             </Button>
 
-            <Button className="bg-sky-600" onClick={handleSubmit}>
+            <Button className="bg-sky-600 hover:bg-sky-700" onClick={handleSubmit}>
               {loading ? "Saving..." : isEdit ? "Save Changes" : "Create"}
             </Button>
           </div>
