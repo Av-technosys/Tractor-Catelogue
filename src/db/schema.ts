@@ -44,3 +44,13 @@ export const users = pgTable("users", {
   role: varchar("role", { length: 20 }),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const productImages = pgTable("product_images", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+
+  filePath: text("file_path").notNull(), // products/abc.png
+  fileId: text("file_id").notNull(), // ImageKit fileId
+});

@@ -20,6 +20,11 @@ import {
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
+type ProductImage = {
+  id: number;
+  filePath: string;
+};
+
 type Product = {
   id: number;
   productName: string;
@@ -30,21 +35,53 @@ type Product = {
   metalType?: string;
   stdClassification?: string;
   description?: string;
-  imageUrl?: string;
   price?: number;
   isActive?: boolean;
+  images: ProductImage[];
 };
 
+
 export default function Page() {
+  const [activeImage, setActiveImage] = useState<string | null>(null);
+
   const router = useRouter();
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
+
+  const getImageUrl = (path: string) => {
+    const cleanPath = path.startsWith("/")
+      ? path.slice(1)
+      : path;
+
+    return `https://ik.imagekit.io/y3ypqdyxmq/${cleanPath}`;
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(`/api/products?id=${id}`);
       const data = await res.json();
-      setProduct(data.data);
+
+      let prod = null as Product | null;
+      // API may return single product object or an array
+      if (data?.data) {
+        if (Array.isArray(data.data)) {
+          prod = data.data.find((p: Product) => String(p.id) === String(id)) || null;
+        } else {
+          prod = data.data;
+        }
+      }
+
+      if (prod) {
+        setProduct({
+          ...prod,
+          images: prod.images || [],
+        });
+        if (prod.images && prod.images.length > 0) {
+          setActiveImage(prod.images[0].filePath);
+        }
+      }
+
     };
 
     fetchData();
@@ -77,14 +114,41 @@ export default function Page() {
 
       <div className="w-full max-w-7xl mx-auto">
         <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="relative rounded-2xl bg-gray-100 w-full h-72 md:h-auto">
-            <Image
-              src={product.imageUrl || "/1.jpg"}
-              alt="Product"
-              fill
-              className="object-cover rounded-2xl"
-            />
+          <div>
+            {/* MAIN IMAGE */}
+            <div className="relative rounded-2xl bg-gray-100 w-full h-72 md:h-96">
+              {/** Use active image if set, otherwise use first product image, fallback to local */}
+              <Image
+                src={
+                  activeImage
+                    ? getImageUrl(activeImage)
+                    : product.images && product.images.length
+                      ? getImageUrl(product.images[0].filePath)
+                      : "/1.jpg"
+                }
+                alt="Product"
+                fill
+                className="object-contain rounded-2xl"
+              />
+            </div>
+
+            {/* THUMBNAILS */}
+            <div className="flex gap-3 mt-4 flex-wrap">
+              {product.images.map((img) => (
+                <Image
+                  width={300}
+                  height={300}
+                  key={img.id}
+                  src={getImageUrl(img.filePath)}
+                  className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${activeImage === img.filePath ? "border-sky-600" : "border-gray-300"
+                    }`}
+                  onClick={() => setActiveImage(img.filePath)}
+                  alt="Thumbnail"
+                />
+              ))}
+            </div>
           </div>
+
 
           <div>
             <h1 className="text-4xl font-bold">{product.productName}</h1>
