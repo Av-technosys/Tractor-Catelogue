@@ -39,7 +39,7 @@ const DashboardGrid = ({
         <Card key={i} className="rounded-xl border shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
-            <item.icon className="h-5 w-5 text-gray-400" />
+            <item.icon className="h-5 w-5 text-sky-600" />
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-bold">{item.value}</div>

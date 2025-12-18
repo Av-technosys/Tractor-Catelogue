@@ -106,7 +106,7 @@ export default function Page() {
       <div className="w-full bg-gray-100 border-b p-4 mb-6">
         <Button
           onClick={() => router.push("/products")}
-          className="flex rounded-xl p-2 items-center gap-2 hover:bg-sky-600 bg-sky-600 hover:text-white"
+          className="flex rounded-lg p-2 items-center gap-2 hover:bg-sky-600 bg-sky-600 hover:text-white"
         >
           <span className="text-xl">
             <IconArrowLeft />
@@ -119,7 +119,7 @@ export default function Page() {
         <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-10">
           <div>
             {/* MAIN IMAGE */}
-            <div className="relative rounded-2xl bg-gray-100 w-full h-72 md:h-96">
+            <div className="relative rounded-2xl bg-gray-100 w-full h-76 md:h-9/12">
               {/** Use active image if set, otherwise use first product image, fallback to local */}
               <Image
                 src={
@@ -131,7 +131,7 @@ export default function Page() {
                 }
                 alt="Product"
                 fill
-                className="object-contain rounded-2xl"
+                className="object-cover rounded-2xl"
               />
             </div>
 
@@ -158,7 +158,7 @@ export default function Page() {
 
             <div className="flex items-center gap-4 mt-3">
               <p className="text-3xl font-semibold text-sky-600">
-                ${product.price}
+                ₹ {product.price}
               </p>
 
               {product.isActive ? (

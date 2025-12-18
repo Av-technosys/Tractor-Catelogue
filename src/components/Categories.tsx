@@ -89,23 +89,3 @@ const Categories = () => {
 };
 
 export default Categories;
-
-{/* 
-  <Card
-                key={idx}
-                className="group flex flex-col items-center justify-center text-center 
-                transition border border-transparent hover:border-blue-500 hover:shadow-md"
-              >
-                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center transition group-hover:bg-blue-600">
-                  <Icon size={25} className="text-blue-600 transition group-hover:text-white" />
-                </div>
-
-                <CardHeader className="w-full flex flex-col items-center">
-                  <CardTitle className="font-semibold text-center">
-                    {cat.categoryName}
-                  </CardTitle>
-                </CardHeader>
-
-                <CardContent className="text-gray-500">Active</CardContent>
-              </Card> 
-              */}

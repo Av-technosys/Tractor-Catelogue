@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Package,
   FolderTree,
-  Image as ImageIcon,
 } from "lucide-react";
 import {
   Sidebar as ShadSidebar,
@@ -21,14 +20,13 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { IconArrowLeftFromArc, IconUser } from "@tabler/icons-react";
+import { IconArrowLeftFromArc, IconHome, IconUser } from "@tabler/icons-react";
 
 const projects = [
   { name: "Profile", url: "/admin/profile", icon: IconUser },
   { name: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { name: "Products", url: "/admin/product", icon: Package },
   { name: "Categories", url: "/admin/category", icon: FolderTree },
-  { name: "Media Manager", url: "/admin/media", icon: ImageIcon },
 ];
 
 const Sidebar = () => {
@@ -69,18 +67,18 @@ const Sidebar = () => {
         </SidebarGroup>
       </SidebarContent>
       <Link href="/">
-        <div className="p-1 border-t flex justify-center">
-          <Button className="bg-transparent text-black text-center gap-2 py-4 hover:bg-orange-400 w-full">
-            <IconArrowLeftFromArc />
+        <div className="p-1 border-t ">
+          <Button className="bg-transparent text-black hover:text-white gap-5 py-4 flex justify-start hover:bg-sky-600  w-full">
+            <IconHome  />
             Back to Site
           </Button>
         </div>
       </Link>
 
-      <div className="p-1 pb-2 border-t flex justify-center">
+      <div className="p-1 pb-4 border-t ">
         <Button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="bg-transparent text-black text-center gap-2 py-4 hover:bg-red-600 w-full">
+          className="bg-transparent text-black hover:text-white flex justify-start gap-5 py-4 hover:bg-red-600 w-full">
           <IconArrowLeftFromArc />
           Logout
         </Button>

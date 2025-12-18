@@ -3,8 +3,8 @@ import { db } from "@/src/db/client";
 import { products, productImages } from "@/src/db/schema";
 import { desc, eq } from "drizzle-orm";
 
-// Types for API responses and inputs
 type ImageInput = { filePath: string; fileId: string };
+
 type ProductWithImages = {
   id: number;
   productName: string;
@@ -16,9 +16,12 @@ type ProductWithImages = {
   stdClassification?: string;
   description?: string;
   price?: number;
+  category?: string;
+  categoryId?: number;
   isActive?: boolean;
   images: { id: number; filePath: string }[];
 };
+
 type ProductSummary = {
   id: number;
   productName: string;
@@ -26,6 +29,8 @@ type ProductSummary = {
   oePartNo?: string | number;
   metalType?: string;
   price?: number;
+  category?: string;
+  categoryId?: number;
   isActive?: boolean;
   images: { id: number; filePath: string }[];
 };
@@ -35,7 +40,6 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     await db.transaction(async (tx) => {
-      // 1️⃣ Insert product
       const [product] = await tx
         .insert(products)
         .values({
@@ -54,13 +58,12 @@ export async function POST(req: Request) {
         })
         .returning();
 
-      // 2️⃣ Insert images (multiple)
       if (body.images?.length) {
         await tx.insert(productImages).values(
           body.images.map((img: ImageInput) => ({
             productId: product.id,
-            filePath: img.filePath, // products/abc.png
-            fileId: img.fileId, // ImageKit fileId
+            filePath: img.filePath,
+            fileId: img.fileId,
           }))
         );
       }
@@ -73,32 +76,11 @@ export async function POST(req: Request) {
   }
 }
 
-// export async function GET(req: Request) {
-//   try {
-//     const { searchParams } = new URL(req.url);
-//     const id = searchParams.get("id");
-//     if (id) {
-//       const data = await db
-//         .select()
-//         .from(products)
-//         .where(eq(products.id, Number(id)));
-
-//       return NextResponse.json({ success: true, data: data[0] });
-//     }
-
-//     const data = await db.select().from(products).orderBy(desc(products));
-//     return NextResponse.json({ success: true, data });
-//   } catch (error) {
-//     console.error("PRODUCT GET ERROR:", error);
-//     return NextResponse.json({ success: false, error }, { status: 500 });
-//   }
-// }
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
 
-    // If id provided, return a single product with images
     if (id) {
       const rows = await db
         .select({
@@ -111,9 +93,10 @@ export async function GET(req: Request) {
           metalType: products.metalType,
           stdClassification: products.stdClassification,
           price: products.price,
+          category: products.category,
+          categoryId: products.categoryId,
           description: products.description,
           isActive: products.isActive,
-
           imageId: productImages.id,
           filePath: productImages.filePath,
         })
@@ -136,6 +119,8 @@ export async function GET(req: Request) {
         metalType: first.metalType ?? undefined,
         stdClassification: first.stdClassification ?? undefined,
         price: first.price ?? undefined,
+        category: first.category ?? undefined,
+        categoryId: first.categoryId ?? undefined,
         description: first.description ?? undefined,
         isActive: first.isActive ?? undefined,
         images: [],
@@ -150,7 +135,6 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: true, data: product });
     }
 
-    // Otherwise return all products grouped with images
     const rows = await db
       .select({
         productId: products.id,
@@ -159,8 +143,9 @@ export async function GET(req: Request) {
         oePartNo: products.oePartNo,
         metalType: products.metalType,
         price: products.price,
+        category: products.category,
+        categoryId: products.categoryId,
         isActive: products.isActive,
-
         imageId: productImages.id,
         filePath: productImages.filePath,
       })
@@ -168,9 +153,14 @@ export async function GET(req: Request) {
       .leftJoin(productImages, eq(products.id, productImages.productId))
       .orderBy(desc(products.id));
 
+    const categoryIdParam = searchParams.get("categoryId");
+    const filteredRows = categoryIdParam
+      ? rows.filter((r) => r.categoryId === Number(categoryIdParam))
+      : rows;
+
     const productMap = new Map<number, ProductSummary>();
 
-    for (const row of rows) {
+    for (const row of filteredRows) {
       if (!productMap.has(row.productId)) {
         productMap.set(row.productId, {
           id: row.productId,
@@ -179,6 +169,8 @@ export async function GET(req: Request) {
           oePartNo: row.oePartNo ?? undefined,
           metalType: row.metalType ?? undefined,
           price: row.price ?? undefined,
+          category: row.category ?? undefined,
+          categoryId: row.categoryId ?? undefined,
           isActive: row.isActive ?? undefined,
           images: [],
         });

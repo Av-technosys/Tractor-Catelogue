@@ -20,7 +20,6 @@ const Footer = () => {
           <ul className="space-y-2 text-gray-600">
             <li className="hover:text-gray-900 cursor-pointer">Categories</li>
             <li className="hover:text-gray-900 cursor-pointer">All Products</li>
-            <li className="hover:text-gray-900 cursor-pointer">Search Parts</li>
           </ul>
         </div>
         <div>
@@ -43,8 +42,8 @@ const Footer = () => {
       </div>
       <hr className="w-3/4 mx-auto" />
       <div className="text-center py-6  text-gray-500">
-        © 2025 SCOTT Parts. All rights reserved. 
-     
+        © 2025 SCOTT Parts. All rights reserved.
+
 
       </div>
     </footer>

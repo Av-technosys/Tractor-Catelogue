@@ -75,14 +75,14 @@ const Products = ({
                 : "/placeholder.png";
 
             return (
-              <Card key={item.id} className="rounded-xl overflow-hidden border">
+              <Card key={item.id} className="rounded-xl py-0 pb-4 overflow-hidden border">
                 <CardHeader className="p-0">
                   <div className="w-full h-full flex items-center justify-center bg-gray-50">
                     <Image
                       src={imageSrc}
                       alt={item.productName}
-                      width={300}
-                      height={400}
+                      width={500}
+                      height={300}
                       className="object-contain"
                     />
                   </div>
