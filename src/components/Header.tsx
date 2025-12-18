@@ -25,9 +25,9 @@ const Header = () => {
 
           {/* Navbar */}
           <nav className="flex items-center gap-8 font-semibold text-gray-600">
-            <Link href="/" className="hover:text-black transition">Home</Link>
-            <Link href="/categories" className="hover:text-black transition">Categories</Link>
-            <Link href="/products" className="hover:text-black transition">Products</Link>
+            <Link href="/" className="hover:text-sky-600 transition">Home</Link>
+            <Link href="/categories" className="hover:text-sky-600 transition">Categories</Link>
+            <Link href="/products" className="hover:text-sky-600 transition">Products</Link>
           </nav>
 
         </div>

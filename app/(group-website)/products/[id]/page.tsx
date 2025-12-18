@@ -2,6 +2,7 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
 import {
   IconShare,
   IconMessage,
@@ -19,6 +20,8 @@ import {
 } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link";
 
 type ProductImage = {
   id: number;
@@ -196,10 +199,12 @@ export default function Page() {
             </div>
 
             <div className="flex items-center gap-4 mt-8">
+              <Link href="/contact">
               <Button className="bg-sky-600 hover:bg-sky-700 flex-1 py-5 rounded-xl">
                 <IconMessage size={18} className="mr-2" />
                 Contact for Quote
               </Button>
+              </Link>
 
               {/* SHARE BUTTON */}
               <Popover>
@@ -217,35 +222,40 @@ export default function Page() {
                   <p className="font-semibold mb-3">Share this product</p>
 
                   {/* WhatsApp */}
-                  <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
+                  {/* <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
                     <IconBrandWhatsapp size={20} />
                     <span>WhatsApp</span>
-                  </div>
+                  </div> */}
 
                   {/* Facebook */}
-                  <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
+                  {/* <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
                     <IconBrandFacebook size={20} />
                     <span>Facebook</span>
-                  </div>
+                  </div> */}
 
                   {/* Email */}
-                  <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
+                  {/* <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
                     <IconMail size={20} />
                     <span>Email</span>
-                  </div>
+                  </div> */}
 
                   {/* Copy Link */}
                   <div
-                    onClick={() =>
-                      navigator.clipboard.writeText(
-                        `${window.location.origin}/products/${id}`
-                      )
-                    }
-                    className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2"
-                  >
-                    <IconLink size={20} />
-                    <span>Copy Link</span>
-                  </div>
+  onClick={() => {
+    navigator.clipboard.writeText(
+      `${window.location.origin}/products/${id}`
+    );
+
+   toast("Link copied successfully", {
+  description: "Product Url Copy Successfull",
+});
+  }}
+  className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2"
+>
+  <IconLink size={20} />
+  <span>Copy Link</span>
+</div>
+
                 </PopoverContent>
               </Popover>
             </div>
