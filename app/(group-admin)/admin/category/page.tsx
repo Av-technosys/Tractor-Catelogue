@@ -26,7 +26,7 @@ export default function CategoryTable() {
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [editData, setEditData] = useState<Category | null>(null);
-
+  const [errorPopup, setErrorPopup] = useState({ show: false, message: "" });
   const getCategories = async () => {
     try {
       const res = await fetch("/api/categories");
@@ -41,9 +41,9 @@ export default function CategoryTable() {
 
   useEffect(() => {
     const fetchData = async () => {
-    await getCategories();
-  };
-  fetchData();
+      await getCategories();
+    };
+    fetchData();
   }, []);
 
   const deleteCategory = async (id) => {
@@ -53,106 +53,127 @@ export default function CategoryTable() {
 
     const data = await res.json();
 
-    if (data.success) {
+    if (res.ok && data.success) {
       getCategories();
+    } else {
+      setErrorPopup({
+        show: true,
+        message:
+          data.message ||
+          "This category cannot be deleted because it contains products.",
+      });
     }
   };
 
   return (
-    <div className="bg-gray-100">
-      <div className="flex justify-between bg-white shadow-sm p-5">
-        <h1 className="text-2xl font-semibold">Categories</h1>
+    <>
+      <div className="bg-gray-100">
+        <div className="flex justify-between bg-white shadow-sm p-5">
+          <h1 className="text-2xl font-semibold">Categories</h1>
 
-       
-        <Button
-          onClick={() => {
-            setEditData(null); 
-            setOpen(true);
-          }}
-          className="bg-sky-600 hover:bg-sky-600 text-xs"
-        >
-          <IconPlus /> Add Categories
-        </Button>
+          <Button
+            onClick={() => {
+              setEditData(null);
+              setOpen(true);
+            }}
+            className="bg-sky-600 hover:bg-sky-600 text-xs"
+          >
+            <IconPlus /> Add Categories
+          </Button>
 
-        <CategoryPopup
-          open={open}
-          onClose={() => setOpen(false)}
-          refresh={getCategories}
-          editData={editData}
-        />
-      </div>
+          <CategoryPopup
+            open={open}
+            onClose={() => setOpen(false)}
+            refresh={getCategories}
+            editData={editData}
+          />
+        </div>
 
-      <div className="px-8 py-4 bg-gray-100">
-        <div className="p-1 px-4 bg-white mt-6 rounded-xl">
-          <h2 className="text-2xl font-semibold mb-6 mt-6">
-            All Categories ({categories.length})
-          </h2>
+        <div className="px-8 py-4 bg-gray-100">
+          <div className="p-1 px-4 bg-white mt-6 rounded-xl">
+            <h2 className="text-2xl font-semibold mb-6 mt-6">
+              All Categories ({categories.length})
+            </h2>
 
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Sr. No.</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {categories.map((item: Category, index) => (
-                <TableRow key={item.id}>
-                  <TableCell>{index + 1}</TableCell>
-
-                  <TableCell>{item.categoryName}</TableCell>
-
-                  <TableCell className="text-gray-600">
-                    {item.description}
-                  </TableCell>
-
-                  <TableCell>
-                    <Switch checked={item.isActive} />
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="flex justify-end gap-2">
-
-                     
-                      <Button
-                        onClick={() => {
-                          setEditData(item);
-                          setOpen(true);
-                        }}
-                        className="bg-transparent hover:bg-sky-600 text-gray-400 hover:text-white"
-                      >
-                        <IconPencil size={18} />
-                      </Button>
-
-                      
-                      <ConfirmPopup
-                        title="Are you sure you want to delete this category?"
-                        alertTitle="Delete Category"
-                        description="This action is permanent and cannot be recovered."
-                        confirmText="Delete"
-                        cancelText="Cancel"
-                        onConfirm={() => deleteCategory(item.id)}
-                      >
-                        <button className="bg-transparent hover:bg-sky-600 p-1 rounded-md">
-    <IconTrash
-      size={18}
-      className="text-red-400 cursor-pointer hover:text-white"
-    />
-  </button>
-                      </ConfirmPopup>
-                    </div>
-                  </TableCell>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Sr. No.</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
+              </TableHeader>
 
-          </Table>
+              <TableBody>
+                {categories.map((item: Category, index) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{index + 1}</TableCell>
+
+                    <TableCell>{item.categoryName}</TableCell>
+
+                    <TableCell className="text-gray-600">
+                      {item.description}
+                    </TableCell>
+
+                    <TableCell>
+                      <Switch checked={item.isActive} />
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          onClick={() => {
+                            setEditData(item);
+                            setOpen(true);
+                          }}
+                          className="bg-transparent hover:bg-sky-600 text-gray-400 hover:text-white"
+                        >
+                          <IconPencil size={18} />
+                        </Button>
+
+                        <ConfirmPopup
+                          title="Are you sure you want to delete this category?"
+                          alertTitle="Delete Category"
+                          description="This action is permanent and cannot be recovered."
+                          confirmText="Delete"
+                          cancelText="Cancel"
+                          onConfirm={() => deleteCategory(item.id)}
+                        >
+                          <button className="bg-transparent hover:bg-sky-600 p-1 rounded-md">
+                            <IconTrash
+                              size={18}
+                              className="text-red-400 cursor-pointer hover:text-white"
+                            />
+                          </button>
+                        </ConfirmPopup>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
-    </div>
+      {/* Error Popup - Jab delete fail ho */}
+      {errorPopup.show && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h3 className="text-lg font-bold text-red-600">Action Denied</h3>
+            <p className="text-gray-600 mt-2">{errorPopup.message}</p>
+            <div className="mt-6 flex justify-end">
+              <Button
+                onClick={() => setErrorPopup({ show: false, message: "" })}
+                className="bg-sky-600 hover:bg-sky-700 text-white"
+              >
+                Ok
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
