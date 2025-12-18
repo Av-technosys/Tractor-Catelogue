@@ -5,15 +5,22 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+const IMAGEKIT_BASE_URL = "https://ik.imagekit.io/y3ypqdyxmq/";
+
+type ProductImage = {
+  id: number;
+  filePath: string;
+};
+
 type Product = {
   id: number;
   productName: string;
   scottPartNo: number;
   oePartNo: number;
   metalType: string;
-  imageUrl: string;
   price: number;
   isActive: boolean;
+  images: ProductImage[];
 };
 
 const Products = ({
@@ -30,10 +37,8 @@ const Products = ({
     try {
       const res = await fetch("/api/products");
       const data = await res.json();
-
       const items: Product[] = data?.data || [];
       setProductData(items);
-
       return items;
     } catch (error) {
       console.log("error fetching products", error);
@@ -46,7 +51,6 @@ const Products = ({
       const data = await getProductData();
       onCountChange(data.length);
     };
-
     fetchData();
   }, [getProductData, onCountChange]);
 
@@ -61,50 +65,61 @@ const Products = ({
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-0">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredProducts
           .filter((item) => item.isActive)
-          .map((item) => (
-            <Card key={item.id} className="rounded-xl overflow-hidden border">
-              <CardHeader className="p-0">
-                <div className="w-full flex items-center justify-center">
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.productName}
-                    width={300}
-                    height={200}
-                    className="object-cover"
-                  />
-                </div>
-              </CardHeader>
+          .map((item) => {
+            const imageSrc =
+              item.images?.length > 0
+                ? `${IMAGEKIT_BASE_URL}${item.images[0].filePath}`
+                : "/placeholder.png";
 
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">{item.productName}</h3>
-                  <span className="text-sm bg-gray-100 px-3 py-1 rounded-full font-medium">
-                    ₹{item.price}
-                  </span>
-                </div>
+            return (
+              <Card key={item.id} className="rounded-xl overflow-hidden border">
+                <CardHeader className="p-0">
+                  <div className="w-full flex items-center justify-center bg-gray-50">
+                    <Image
+                      src={imageSrc}
+                      alt={item.productName}
+                      width={300}
+                      height={300}
+                      className="object-contain"
+                    />
+                  </div>
+                </CardHeader>
 
-                <p className="text-gray-600 text-sm mt-1">
-                  SCOTT: {item.scottPartNo}
-                </p>
-                <p className="text-gray-600 text-sm">OE: {item.oePartNo}</p>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">
+                      {item.productName}
+                    </h3>
+                    <span className="text-sm bg-gray-100 px-3 py-1 rounded-full font-medium">
+                      ₹{item.price}
+                    </span>
+                  </div>
 
-                <p className="text-gray-500 text-sm mt-1">
-                  {item.metalType} • {item.metalType}
-                </p>
+                  <p className="text-gray-600 text-sm mt-1">
+                    SCOTT: {item.scottPartNo}
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    OE: {item.oePartNo}
+                  </p>
 
-                <Button
-                  onClick={() => router.push(`/products/${item.id}`)}
-                  className="w-full mt-4 hover:bg-orange-400 hover:text-white"
-                  variant="outline"
-                >
-                  View Details
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                  <p className="text-gray-500 text-sm mt-1">
+                    {item.metalType}
+                  </p>
+
+                  <Button
+                    onClick={() => router.push(`/products/${item.id}`)}
+                    className="w-full mt-4 hover:bg-orange-400 hover:text-white"
+                    variant="outline"
+                  >
+                    View Details
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
       </div>
     </div>
   );

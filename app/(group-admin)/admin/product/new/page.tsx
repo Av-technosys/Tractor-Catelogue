@@ -19,11 +19,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { IconArrowLeft, IconUpload } from "@tabler/icons-react";
+import { IconArrowLeft } from "@tabler/icons-react";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
+import ImageUpload from "@/src/components/ImageUpload";
+import Image from "next/image";
 type Category = {
   id: number;
   categoryName: string;
@@ -41,7 +43,13 @@ const Page = () => {
   const [price, setPrice] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  type UploadedImage = {
+    filePath: string;
+    fileId: string;
+  };
+
+  const [images, setImages] = useState<UploadedImage[]>([]);
+
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -63,7 +71,7 @@ const Page = () => {
       price: Number(price),
       categoryId,
       description,
-      imageUrl,
+      images,
       isActive,
       category: categoryName,
     };
@@ -91,19 +99,19 @@ const Page = () => {
   };
 
   const [categories, setCategories] = useState<Category[]>([]);
- useEffect(() => {
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch("/api/categories");
-      const data = await res.json();
-      setCategories(data.data);
-      console.log("data", data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/categories");
+        const data = await res.json();
+        setCategories(data.data);
+        console.log("data", data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
- 
+
     fetchCategories();
   }, []);
 
@@ -263,22 +271,20 @@ const Page = () => {
           </CardHeader>
 
           <CardContent>
-            <div className="border-2 border-dashed rounded-xl py-16 max-sm:px-7 max-sm:py-8 flex flex-col items-center justify-center text-center">
-              <IconUpload
-                size={35}
-                className="bg-gray-50 border p-1 rounded-full"
-              />
-              <p className="text-xl mt-6">Click to upload or drag and drop</p>
-              <p className="text-md mt-3">PNG, JPG up to 10MB</p>
-
-              <Button className="relative overflow-hidden mt-8 bg-transparent text-black hover:text-white border hover:bg-sky-600">
-                Select Files
-                <input
-                  type="file"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  onChange={(e) => setImageUrl(e.target.files?.[0]?.name || "")}
+            <ImageUpload
+              onUploadSuccess={(uploadedImages) => {
+                setImages((prev) => [...prev, ...uploadedImages]);
+              }}
+            />
+            <div className="flex gap-3 mt-4 flex-wrap">
+              {images.map((img, index) => (
+                <Image
+                  key={index}
+                  src={`https://ik.imagekit.io/y3ypqdyxmq/${img.filePath}`}
+                  className="w-24 h-24 object-cover rounded border"
+                  alt="Uploaded"
                 />
-              </Button>
+              ))}
             </div>
           </CardContent>
         </Card>
