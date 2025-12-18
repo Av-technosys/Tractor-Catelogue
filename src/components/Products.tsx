@@ -77,7 +77,7 @@ const Products = ({
             return (
               <Card key={item.id} className="rounded-xl py-0 pb-4 overflow-hidden border">
                 <CardHeader className="p-0">
-                  <div className="w-full flex items-center justify-center bg-gray-50">
+                  <div className="w-full h-full flex items-center justify-center bg-gray-50">
                     <Image
                       src={imageSrc}
                       alt={item.productName}
@@ -111,7 +111,7 @@ const Products = ({
 
                   <Button
                     onClick={() => router.push(`/products/${item.id}`)}
-                    className="w-full mt-4 hover:bg-orange-400 hover:text-white"
+                    className="w-full mt-4 hover:bg-sky-600 hover:text-white"
                     variant="outline"
                   >
                     View Details
