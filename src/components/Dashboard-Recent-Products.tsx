@@ -29,12 +29,12 @@ const DashboardRecentProducts = ({ productData }) => {
                 <div className="flex items-center gap-3">
                   <div className=" rounded-lg bg-gray-200 ">
                     <Image
-                      src={imageSrc} 
+                      src={imageSrc}
                       alt={item.productName}
                       width={80}
-                      height={60} 
-                      className="object-cover"
-                      
+                      height={60}
+                      className="object-cover rounded-lg"
+
                     />
                   </div>
 

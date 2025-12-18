@@ -1,5 +1,5 @@
 import { db } from "@/src/db/client";
-import { products } from "@/src/db/schema";
+import { products, productImages } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,11 +11,64 @@ export default async function CategoryPage(props: {
 }) {
   const { id } = await props.params;
   const categoryId = Number(id);
-
-  const categoryProducts = await db
-    .select()
+  // Select products and left join product images, then group images per product
+  const rows = await db
+    .select({
+      productId: products.id,
+      productName: products.productName,
+      scottPartNo: products.scottPartNo,
+      oePartNo: products.oePartNo,
+      price: products.price,
+      isActive: products.isActive,
+      metalType: products.metalType,
+      imageId: productImages.id,
+      filePath: productImages.filePath,
+    })
     .from(products)
+    .leftJoin(productImages, eq(products.id, productImages.productId))
     .where(eq(products.categoryId, categoryId));
+
+  type CategoryProduct = {
+    id: number;
+    productName: string;
+    scottPartNo?: string | number | null;
+    oePartNo?: string | number | null;
+    price?: number | null;
+    isActive?: boolean | null;
+    metalType?: string | null;
+    images: { id: number; filePath: string }[];
+  };
+
+  const map = new Map<number, CategoryProduct>();
+  for (const r of rows) {
+    if (!map.has(r.productId)) {
+      map.set(r.productId, {
+        id: r.productId,
+        productName: r.productName,
+        scottPartNo: r.scottPartNo,
+        oePartNo: r.oePartNo,
+        price: r.price,
+        isActive: r.isActive,
+        metalType: r.metalType,
+        images: [],
+      });
+    }
+
+    if (r.filePath && r.imageId) {
+      const p = map.get(r.productId);
+      if (p) {
+        p.images.push({ id: r.imageId, filePath: r.filePath });
+      }
+    }
+  }
+
+  const categoryProducts = Array.from(map.values());
+
+  const getImageUrl = (path?: string | null) => {
+    if (!path) return "/placeholder.png";
+    const clean = path.startsWith("/") ? path.slice(1) : path;
+    return `https://ik.imagekit.io/y3ypqdyxmq/${clean}`;
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
@@ -29,20 +82,24 @@ export default async function CategoryPage(props: {
         {categoryProducts
           .filter((item) => item.isActive)
           .map((item) => (
-            <Card key={item.id} className="rounded-xl overflow-hidden">
+            <Card key={item.id} className="rounded-xl py-0 pb-4 px-0 overflow-hidden">
               <CardHeader className="p-0">
                 <div className="flex justify-center">
                   <Image
-                    src={item.imageUrl ?? "/placeholder.png"}
+                    src={
+                      item.images && item.images.length
+                        ? getImageUrl(item.images[0].filePath)
+                        : "/placeholder.png"
+                    }
                     alt={item.productName}
-                    width={300}
+                    width={400}
                     height={200}
                     className="object-cover"
                   />
                 </div>
               </CardHeader>
 
-              <CardContent className="p-4">
+              <CardContent className="">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold">
                     {item.productName}
@@ -63,7 +120,7 @@ export default async function CategoryPage(props: {
                   {item.metalType}
                 </p>
 
-    
+
                 <Link href={`/products/${item.id}`}>
                   <Button
                     variant="outline"

@@ -69,7 +69,7 @@ const Page = () => {
       metalType,
       stdClassification,
       price: Number(price),
-      categoryId,
+      categoryId: Number(categoryId),
       description,
       images,
       isActive,
@@ -81,11 +81,16 @@ const Page = () => {
     try {
       const res = await fetch("/api/products", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       const data = await res.json();
-      console.log("api data", data);
+      console.log("api data", data, "status", res.status);
+
+      if (!res.ok) {
+        console.error("API responded with non-OK status", res.status, data);
+      }
 
       if (data.success) {
         setSuccessMessage(["Product Created", "Successfully!"]);
@@ -286,8 +291,7 @@ const Page = () => {
                   src={`https://ik.imagekit.io/y3ypqdyxmq/${img.filePath}`}
                   className="w-24 h-24 object-cover rounded border"
                   alt="Uploaded"
-                  width={300}
-                  height={300}
+
                 />
               ))}
             </div>
