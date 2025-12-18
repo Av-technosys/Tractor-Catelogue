@@ -136,13 +136,13 @@ const Page = () => {
           <CardContent>
             <form className="grid gap-6">
               <div className="flex flex-col gap-2">
-                  <Label>Engine Type Name</Label>
-                  <Input
-                    className="bg-gray-50"
-                    placeholder="e.g., Piston Ring Set"      
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                  />
+                <Label>Engine Type Name</Label>
+                <Input
+                  className="bg-gray-50"
+                  placeholder="e.g., Piston Ring Set"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                />
               </div>
 
               <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6">
@@ -175,14 +175,14 @@ const Page = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                
-                   <Label>Product Name</Label>
-                <Input
-                  className="bg-gray-50"
-                  placeholder=" e.g., EICHER TRACTOR"
-                  value={engineType}
-                  onChange={(e) => setEngineType(e.target.value)}
-                />
+
+                  <Label>Product Name</Label>
+                  <Input
+                    className="bg-gray-50"
+                    placeholder=" e.g., EICHER TRACTOR"
+                    value={engineType}
+                    onChange={(e) => setEngineType(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -280,6 +280,8 @@ const Page = () => {
             <div className="flex gap-3 mt-4 flex-wrap">
               {images.map((img, index) => (
                 <Image
+                  width={300}
+                  height={300}
                   key={index}
                   src={`https://ik.imagekit.io/y3ypqdyxmq/${img.filePath}`}
                   className="w-24 h-24 object-cover rounded border"
