@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
+// import { signOut } from "next-auth/react";
 
 import {
   LayoutDashboard,
@@ -32,6 +32,15 @@ const projects = [
 const Sidebar = () => {
   const pathname = usePathname();
 
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+    });
+
+    router.push("/login");
+  }
   return (
     <ShadSidebar>
       <SidebarContent>
@@ -77,7 +86,8 @@ const Sidebar = () => {
 
       <div className="p-1 pb-4 border-t ">
         <Button
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          // onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={handleLogout}
           className="bg-transparent text-black hover:text-white flex justify-start gap-5 py-4 hover:bg-red-600 w-full">
           <IconArrowLeftFromArc />
           Logout

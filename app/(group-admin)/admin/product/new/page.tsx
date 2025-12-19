@@ -86,7 +86,6 @@ const Page = () => {
       });
 
       const data = await res.json();
-      console.log("api data", data, "status", res.status);
 
       if (!res.ok) {
         console.error("API responded with non-OK status", res.status, data);
@@ -110,12 +109,10 @@ const Page = () => {
         const res = await fetch("/api/categories");
         const data = await res.json();
         setCategories(data.data);
-        console.log("data", data);
       } catch (err) {
         console.error(err);
       }
     };
-
 
     fetchCategories();
   }, []);
@@ -180,7 +177,6 @@ const Page = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-
                   <Label>Product Name</Label>
                   <Input
                     className="bg-gray-50"
@@ -291,7 +287,6 @@ const Page = () => {
                   src={`https://ik.imagekit.io/y3ypqdyxmq/${img.filePath}`}
                   className="w-24 h-24 object-cover rounded border"
                   alt="Uploaded"
-
                 />
               ))}
             </div>

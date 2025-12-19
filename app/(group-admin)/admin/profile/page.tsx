@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { IconShield } from "@tabler/icons-react";
+import { IconEye, IconEyeOff, IconShield } from "@tabler/icons-react";
 import {
   Table,
   TableBody,
@@ -16,7 +16,14 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import ConfirmPopup from "@/src/components/Alert";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { decryptPassword } from "@/lib/encryption";
 
 type user = {
   id: number;
@@ -46,7 +53,6 @@ export default function ProfilePage() {
     // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!username || !email || !password) {
-   
       return;
     }
     // if (!emailRegex.test(email)) {
@@ -60,7 +66,7 @@ export default function ProfilePage() {
       });
 
       const data = await res.json();
-      console.log(" user api data", data);
+
       if (data.success) {
         setSuccessMessage("Add User Successfully ✅");
         setShowSuccess(true);
@@ -75,16 +81,6 @@ export default function ProfilePage() {
     }
     setLoading(false);
   };
-
-  // const profileData = [
-  //   {
-  //     avatar: "CN",
-  //     name: "Name",
-  //     email: "akansha@avtechnosys.com",
-  //     defaultEmail: "akansha@avtechnosys.com",
-  //   },
-  // ];
-
   const [userData, setUserData] = useState<user[]>([]);
   const profileUser = userData[0];
   const getUserData = async () => {
@@ -101,6 +97,7 @@ export default function ProfilePage() {
   }, []);
 
   const [newPasswords, setNewPasswords] = useState({});
+  const [showPassId, setShowPassId] = useState<number | null>(null);
   const updatePassword = async (id: number) => {
     const newPassword = newPasswords[id];
     try {
@@ -111,7 +108,7 @@ export default function ProfilePage() {
       });
       const data = await res.json();
       if (data.success) {
-        setSuccessMessage("Password Updated Successfully ✅");
+        setSuccessMessage("Password Updated Successfully ");
         setShowSuccess(true);
 
         setNewPasswords((prev) => ({ ...prev, [id]: "" }));
@@ -178,7 +175,7 @@ export default function ProfilePage() {
 
                     <div className="flex flex-col gap-2">
                       <Label>Email</Label>
-                      <Input defaultValue={profileUser.email}/>
+                      <Input defaultValue={profileUser.email} />
                     </div>
 
                     <Button className="mt-4 w-fit hover:bg-sky-700 bg-sky-600">
@@ -227,10 +224,34 @@ export default function ProfilePage() {
                               {user?.email}
                             </TableCell>
 
-                            <TableCell>
-                              <span className="text-gray-600 bg-gray-100 p-1 rounded-md">
-                                {user?.password}
-                              </span>
+                            <TableCell className="w-[180px]">
+                              <div className="flex items-center justify-between gap-2 bg-gray-100 p-2 rounded-md border border-gray-200 h-9 w-full">
+                                <div className="flex-1 overflow-hidden">
+                                  <span className="text-gray-600 font-mono text-xs block truncate leading-tight">
+                                    {user.password.startsWith("$2")
+                                      ? "••••••••"
+                                      : showPassId === user.id
+                                      ? decryptPassword(user.password)
+                                      : "••••••••"}
+                                  </span>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setShowPassId(
+                                      showPassId === user.id ? null : user.id
+                                    )
+                                  }
+                                  className="text-gray-400 hover:text-sky-600 focus:outline-none "
+                                >
+                                  {showPassId === user.id ? (
+                                    <IconEyeOff size={16} />
+                                  ) : (
+                                    <IconEye size={16} />
+                                  )}
+                                </button>
+                              </div>
                             </TableCell>
 
                             <TableCell>
@@ -315,15 +336,15 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex flex-col gap-2">
                         <Label>Role</Label>
-                     <Select value={role} onValueChange={setRole}>
-  <SelectTrigger className="w-full">
-    <SelectValue placeholder="Select Role" />
-  </SelectTrigger>
-  <SelectContent>
-    <SelectItem value="admin">Admin</SelectItem>
-    <SelectItem value="sub-admin">Sub-Admin</SelectItem>
-  </SelectContent>
-</Select>
+                        <Select value={role} onValueChange={setRole}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="admin">Admin</SelectItem>
+                            <SelectItem value="sub-admin">Sub-Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       <Button
