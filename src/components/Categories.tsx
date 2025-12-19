@@ -12,6 +12,8 @@ import {
   IconDots,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type Category = {
   id: number;
@@ -66,10 +68,13 @@ const Categories = () => {
                 <Card
                   key={idx}
                   className="group flex flex-col items-center justify-center text-center 
-                transition border border-transparent hover:border-blue-500 hover:shadow-md"
+                transition border border-transparent hover:border-sky-600 hover:shadow-md"
                 >
-                  <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center transition group-hover:bg-blue-600">
-                    <Icon size={25} className="text-blue-600 transition group-hover:text-white" />
+                  <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center transition group-hover:bg-sky-600">
+                    <Icon
+                      size={25}
+                      className="text-sky-600 transition group-hover:text-white"
+                    />
                   </div>
 
                   <CardHeader className="w-full flex flex-col items-center">
@@ -79,6 +84,23 @@ const Categories = () => {
                   </CardHeader>
 
                   <CardContent className="text-gray-500">Active</CardContent>
+                  <Button
+                    variant="outline"
+                    className="mb-4 border hover:border-sky-600"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toast("Link copied successfully", {
+                        description: "Categories Url Copy Successfull",
+                      });
+                      const categoryUrl = `${window.location.origin}/categories/${cat.id}`;
+
+                      navigator.clipboard.writeText(categoryUrl);
+
+                    }}
+                  >
+                    Copy Link
+                  </Button>
                 </Card>
               </Link>
             );

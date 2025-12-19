@@ -1,5 +1,5 @@
-import Categories from '@/src/components/Categories'
-import React from 'react'
+import Categories from "@/src/components/Categories";
+import React from "react";
 export default function page() {
   return (
     <div className="text-center bg-gray-50 ">
@@ -9,9 +9,9 @@ export default function page() {
           Browse our complete range of tractor spare parts organized by category
         </p>
       </div>
-      <div className='py-10 '>
+      <div className="py-10 ">
         <Categories />
       </div>
     </div>
-  )
+  );
 }

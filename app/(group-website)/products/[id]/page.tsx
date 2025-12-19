@@ -7,9 +7,6 @@ import {
   IconShare,
   IconMessage,
   IconArrowLeft,
-  IconBrandWhatsapp,
-  IconBrandFacebook,
-  IconMail,
   IconLink,
 } from "@tabler/icons-react";
 import Image from "next/image";
@@ -43,7 +40,6 @@ type Product = {
   images: ProductImage[];
 };
 
-
 export default function Page() {
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
@@ -52,13 +48,10 @@ export default function Page() {
   const [product, setProduct] = useState<Product | null>(null);
 
   const getImageUrl = (path: string) => {
-    const cleanPath = path.startsWith("/")
-      ? path.slice(1)
-      : path;
+    const cleanPath = path.startsWith("/") ? path.slice(1) : path;
 
     return `https://ik.imagekit.io/y3ypqdyxmq/${cleanPath}`;
   };
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,10 +59,10 @@ export default function Page() {
       const data = await res.json();
 
       let prod = null as Product | null;
-      // API may return single product object or an array
       if (data?.data) {
         if (Array.isArray(data.data)) {
-          prod = data.data.find((p: Product) => String(p.id) === String(id)) || null;
+          prod =
+            data.data.find((p: Product) => String(p.id) === String(id)) || null;
         } else {
           prod = data.data;
         }
@@ -84,7 +77,6 @@ export default function Page() {
           setActiveImage(prod.images[0].filePath);
         }
       }
-
     };
 
     fetchData();
@@ -114,20 +106,17 @@ export default function Page() {
           <span className="text-sm font-medium">Back to Products</span>
         </Button>
       </div>
-
       <div className="w-full max-w-7xl mx-auto">
         <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-10">
           <div>
-            {/* MAIN IMAGE */}
             <div className="relative rounded-2xl bg-gray-100 w-full h-76 md:h-9/12">
-              {/** Use active image if set, otherwise use first product image, fallback to local */}
               <Image
                 src={
                   activeImage
                     ? getImageUrl(activeImage)
                     : product.images && product.images.length
-                      ? getImageUrl(product.images[0].filePath)
-                      : "/1.jpg"
+                    ? getImageUrl(product.images[0].filePath)
+                    : "/1.jpg"
                 }
                 alt="Product"
                 fill
@@ -135,7 +124,6 @@ export default function Page() {
               />
             </div>
 
-            {/* THUMBNAILS */}
             <div className="flex gap-3 mt-4 flex-wrap">
               {product.images.map((img) => (
                 <Image
@@ -143,15 +131,17 @@ export default function Page() {
                   height={300}
                   key={img.id}
                   src={getImageUrl(img.filePath)}
-                  className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${activeImage === img.filePath ? "border-sky-600" : "border-gray-300"
-                    }`}
+                  className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${
+                    activeImage === img.filePath
+                      ? "border-sky-600"
+                      : "border-gray-300"
+                  }`}
                   onClick={() => setActiveImage(img.filePath)}
                   alt="Thumbnail"
                 />
               ))}
             </div>
           </div>
-
 
           <div>
             <h1 className="text-4xl font-bold">{product.productName}</h1>
@@ -200,13 +190,12 @@ export default function Page() {
 
             <div className="flex items-center gap-4 mt-8">
               <Link href="/contact">
-              <Button className="bg-sky-600 hover:bg-sky-700 flex-1 py-5 rounded-xl">
-                <IconMessage size={18} className="mr-2" />
-                Contact for Quote
-              </Button>
+                <Button className="bg-sky-600 hover:bg-sky-700 flex-1 py-5 rounded-xl">
+                  <IconMessage size={18} className="mr-2" />
+                  Contact for Quote
+                </Button>
               </Link>
 
-              {/* SHARE BUTTON */}
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -221,41 +210,21 @@ export default function Page() {
                 <PopoverContent className="w-60 p-4 rounded-xl shadow-lg">
                   <p className="font-semibold mb-3">Share this product</p>
 
-                  {/* WhatsApp */}
-                  {/* <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
-                    <IconBrandWhatsapp size={20} />
-                    <span>WhatsApp</span>
-                  </div> */}
-
-                  {/* Facebook */}
-                  {/* <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
-                    <IconBrandFacebook size={20} />
-                    <span>Facebook</span>
-                  </div> */}
-
-                  {/* Email */}
-                  {/* <div className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2">
-                    <IconMail size={20} />
-                    <span>Email</span>
-                  </div> */}
-
-                  {/* Copy Link */}
                   <div
-  onClick={() => {
-    navigator.clipboard.writeText(
-      `${window.location.origin}/products/${id}`
-    );
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        `${window.location.origin}/products/${id}`
+                      );
 
-   toast("Link copied successfully", {
-  description: "Product Url Copy Successfull",
-});
-  }}
-  className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2"
->
-  <IconLink size={20} />
-  <span>Copy Link</span>
-</div>
-
+                      toast("Link copied successfully", {
+                        description: "Product Url Copy Successfull",
+                      });
+                    }}
+                    className="flex items-center gap-3 py-2 cursor-pointer hover:bg-sky-600 hover:text-white rounded-lg px-2"
+                  >
+                    <IconLink size={20} />
+                    <span>Copy Link</span>
+                  </div>
                 </PopoverContent>
               </Popover>
             </div>

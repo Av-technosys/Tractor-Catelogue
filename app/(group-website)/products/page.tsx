@@ -3,19 +3,10 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Products from "@/src/components/Products";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 export default function Page() {
-
-const [count, setCount] = useState(0);
-const [searchText, setSearchText] = useState("");
-
+  const [count, setCount] = useState(0);
+  const [searchText, setSearchText] = useState("");
 
   return (
     <div className="w-full max-w-7xl mx-auto px-6 py-10 ">
@@ -24,7 +15,7 @@ const [searchText, setSearchText] = useState("");
           All Products
         </h1>
         <p className="text-sm sm:text-base text-gray-900 mt-1">
-           {count} products found
+          {count} products found
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-10">
@@ -35,43 +26,15 @@ const [searchText, setSearchText] = useState("");
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
-          {/* <Select>
-            <SelectTrigger className="w-full mb-3">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="engine">Engine</SelectItem>
-              <SelectItem value="clutch">Clutch</SelectItem>
-            </SelectContent>
-          </Select> */}
-          {/* <Select>
-            <SelectTrigger className="w-full mb-3">
-              <SelectValue placeholder="Engine Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="diesel">Diesel</SelectItem>
-              <SelectItem value="petrol">Petrol</SelectItem>
-            </SelectContent>
-          </Select> */}
-          {/* <Select>
-            <SelectTrigger className="w-full mb-4">
-              <SelectValue placeholder="Model" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="m1">Model 1</SelectItem>
-              <SelectItem value="m2">Model 2</SelectItem>
-            </SelectContent>
-          </Select> */}
           <p className="text-sm text-gray-700 mb-2">Price Range: $0 - $10000</p>
           <Slider defaultValue={[50]} max={100} step={1} className="mb-4" />
-         <Button
-  variant="outline"
-  className="w-full"
-  onClick={() => setSearchText("")}
->
-  Reset Filters
-</Button>
-
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => setSearchText("")}
+          >
+            Reset Filters
+          </Button>
         </div>
         <div className="col-span-12 md:col-span-8 lg:col-span-9">
           <Products onCountChange={setCount} search={searchText} />
